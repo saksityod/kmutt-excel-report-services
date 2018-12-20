@@ -1,0 +1,586 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="honor_bachelor_report" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="ea7fe8fe-762b-45e4-9e69-1b6cd6f570ac">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kiss_excel_report"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="param_year" class="java.lang.String"/>
+	<parameter name="param_faculty_name" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT faculty.faculty_name
+, depertment.department_name
+, project.project_name
+, faculty.academic_year
+
+, faculty.no_of_graduate as fac_no_graduate
+, faculty.no_of_first_honor as fac_no_first_honor
+, faculty.no_of_second_honor as fac_no_second_honor
+, faculty.no_of_total_honor as fac_no_total_honor
+, faculty.percent_of_honor as fac_percent_of_honor
+
+, depertment.no_of_graduate as dep_no_graduate
+, depertment.no_of_first_honor as dep_no_first_honor
+, depertment.no_of_second_honor as dep_no_second_honor
+, depertment.no_of_total_honor as dep_no_total_honor
+, depertment.percent_of_honor as dep_percent_of_honor
+
+, project.no_of_graduate as pro_no_graduate
+, project.no_of_first_honor as pro_no_first_honor
+, project.no_of_second_honor as pro_no_second_honor
+, project.no_of_total_honor as pro_no_total_honor
+, project.percent_of_honor as pro_percent_of_honor
+
+, total.no_of_graduate as total_no_graduate
+, total.no_of_first_honor as total_no_first_honor
+, total.no_of_second_honor as total_no_second_honor
+, total.no_of_total_honor as total_no_total_honor
+, total.percent_of_honor as total_percent_of_honor
+FROM
+(
+		SELECT faculty_name
+		, academic_year
+		, SUM(no_of_graduate) as no_of_graduate
+		, SUM(no_of_first_honor) as no_of_first_honor
+		, SUM(no_of_second_honor) as no_of_second_honor
+		, SUM(no_of_total_honor) as no_of_total_honor
+		, ((SUM(no_of_total_honor)*100)/SUM(no_of_graduate)) as percent_of_honor
+		FROM honor_bachelor_report
+		WHERE ( academic_year = FROM_BASE64($P{param_year}) OR FROM_BASE64($P{param_year}) = '' )
+		AND ( faculty_name = FROM_BASE64($P{param_faculty_name}) OR FROM_BASE64($P{param_faculty_name}) = ''  )
+		GROUP BY faculty_name, academic_year
+) faculty
+LEFT JOIN 
+(
+		SELECT faculty_name
+		, department_name
+		, academic_year
+		, SUM(no_of_graduate) as no_of_graduate
+		, SUM(no_of_first_honor) as no_of_first_honor
+		, SUM(no_of_second_honor) as no_of_second_honor
+		, SUM(no_of_total_honor) as no_of_total_honor
+		, ((SUM(no_of_total_honor)*100)/SUM(no_of_graduate)) as percent_of_honor
+		FROM honor_bachelor_report
+		WHERE ( academic_year = FROM_BASE64($P{param_year}) OR FROM_BASE64($P{param_year}) = '' )
+		AND ( faculty_name = FROM_BASE64($P{param_faculty_name}) OR FROM_BASE64($P{param_faculty_name}) = ''  )
+		GROUP BY faculty_name, department_name, academic_year
+) depertment ON depertment.faculty_name = faculty.faculty_name
+AND depertment.academic_year = faculty.academic_year
+LEFT JOIN 
+(
+		SELECT faculty_name
+		, department_name
+		, project_name
+		, academic_year
+		, no_of_graduate
+		, no_of_first_honor
+		, no_of_second_honor
+		, no_of_total_honor
+		, percent_of_honor as percent_of_honor
+		FROM honor_bachelor_report
+		WHERE ( academic_year = FROM_BASE64($P{param_year}) OR FROM_BASE64($P{param_year}) = '' )
+		AND ( faculty_name = FROM_BASE64($P{param_faculty_name}) OR FROM_BASE64($P{param_faculty_name}) = ''  )
+) project ON project.faculty_name = faculty.faculty_name
+AND project.department_name = depertment.department_name
+AND project.academic_year = faculty.academic_year
+LEFT JOIN 
+(
+		SELECT academic_year
+		, SUM(no_of_graduate) as no_of_graduate
+		, SUM(no_of_first_honor) as no_of_first_honor
+		, SUM(no_of_second_honor) as no_of_second_honor
+		, SUM(no_of_total_honor) as no_of_total_honor
+		, ((SUM(no_of_total_honor)*100)/SUM(no_of_graduate)) as percent_of_honor
+		FROM honor_bachelor_report
+		WHERE ( academic_year = FROM_BASE64($P{param_year}) OR FROM_BASE64($P{param_year}) = '' )
+		AND ( faculty_name = FROM_BASE64($P{param_faculty_name}) OR FROM_BASE64($P{param_faculty_name}) = ''  )
+		GROUP BY academic_year
+) total ON faculty.academic_year = total.academic_year
+ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, depertment.department_name ASC, project.project_name ASC]]>
+	</queryString>
+	<field name="faculty_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="faculty_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="honor_bachelor_report"/>
+	</field>
+	<field name="department_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="department_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="honor_bachelor_report"/>
+	</field>
+	<field name="project_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="project_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="honor_bachelor_report"/>
+	</field>
+	<field name="academic_year" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="academic_year"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="honor_bachelor_report"/>
+	</field>
+	<field name="fac_no_graduate" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_no_graduate"/>
+	</field>
+	<field name="fac_no_first_honor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_no_first_honor"/>
+	</field>
+	<field name="fac_no_second_honor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_no_second_honor"/>
+	</field>
+	<field name="fac_no_total_honor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_no_total_honor"/>
+	</field>
+	<field name="fac_percent_of_honor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_percent_of_honor"/>
+	</field>
+	<field name="dep_no_graduate" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="dep_no_graduate"/>
+	</field>
+	<field name="dep_no_first_honor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="dep_no_first_honor"/>
+	</field>
+	<field name="dep_no_second_honor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="dep_no_second_honor"/>
+	</field>
+	<field name="dep_no_total_honor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="dep_no_total_honor"/>
+	</field>
+	<field name="dep_percent_of_honor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="dep_percent_of_honor"/>
+	</field>
+	<field name="pro_no_graduate" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="pro_no_graduate"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="honor_bachelor_report"/>
+	</field>
+	<field name="pro_no_first_honor" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="pro_no_first_honor"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="honor_bachelor_report"/>
+	</field>
+	<field name="pro_no_second_honor" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="pro_no_second_honor"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="honor_bachelor_report"/>
+	</field>
+	<field name="pro_no_total_honor" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="pro_no_total_honor"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="honor_bachelor_report"/>
+	</field>
+	<field name="pro_percent_of_honor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pro_percent_of_honor"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="honor_bachelor_report"/>
+	</field>
+	<field name="total_no_graduate" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="total_no_graduate"/>
+	</field>
+	<field name="total_no_first_honor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="total_no_first_honor"/>
+	</field>
+	<field name="total_no_second_honor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="total_no_second_honor"/>
+	</field>
+	<field name="total_no_total_honor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="total_no_total_honor"/>
+	</field>
+	<field name="total_percent_of_honor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="total_percent_of_honor"/>
+	</field>
+	<group name="Year Group" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{academic_year}]]></groupExpression>
+		<groupHeader>
+			<band height="80">
+				<staticText>
+					<reportElement mode="Opaque" x="332" y="40" width="80" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="f46b01c8-8db8-4a49-a69f-eadd5554f6d3"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ผู้สำเร็จฯ
+ป.ตรี ทั้งหมด]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="412" y="40" width="80" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="78593a96-a787-42ae-8dcb-1f2b34891679"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+					</textElement>
+					<text><![CDATA[เกียรตินิยม
+อันดับ 1]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="40" width="332" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="f0a85fd5-90e9-44f0-ba1f-10ad9c04729e"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+					</textElement>
+					<text><![CDATA[โครงการหลักสูตร/ชั้นปี]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="492" y="40" width="80" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="87200339-f150-48d9-9be6-340b3d2a01e7"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+					</textElement>
+					<text><![CDATA[เกียรตินิยม
+อันดับ 2]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="652" y="40" width="150" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="0903c2da-f11d-42a9-b9ea-961125326c7a"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ร้อยละ
+(ของผู้สำเร็จฯ ป.ตรี ทั้งหมด)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="572" y="40" width="80" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="9b7ec08d-2245-49af-a8b1-385fe37a63a1"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="16" isBold="true"/>
+					</textElement>
+					<text><![CDATA[เกียรตินิยม
+รวม]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="0" width="802" height="30" uuid="b6d6dd11-ed94-41c8-88de-6d05c0eade42"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="18" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["จำนวนผู้สำเร็จการศึกษาระดับปริญญาตรีปีการศึกษา "+$F{academic_year}+" ที่ได้รับเกียรตินิยม จำแนกตามอันดับเกียรตินิยม"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="492" y="0" width="80" height="20" backcolor="#D6D6C2" uuid="3a3adb17-208f-4e50-8256-596d3c788ba3">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{total_no_second_honor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="652" y="0" width="150" height="20" backcolor="#D6D6C2" uuid="3763b161-8002-4c8d-8dee-27474a820704">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{total_percent_of_honor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="332" y="0" width="80" height="20" backcolor="#D6D6C2" uuid="1151b0f0-3936-4be9-b3fa-39c8746e5c42">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{total_no_graduate}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="572" y="0" width="80" height="20" backcolor="#D6D6C2" uuid="eefad388-d5d2-4817-9414-d3a05460de2a">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{total_no_total_honor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="412" y="0" width="80" height="20" backcolor="#D6D6C2" uuid="c0194625-ae81-47f7-bb99-487148beae4f">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{total_no_first_honor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="332" height="20" backcolor="#D6D6C2" uuid="94f83c16-8f2a-4bc7-a6ca-66564543251c">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Center">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["รวม"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="Faculty Group">
+		<groupExpression><![CDATA[$F{faculty_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="492" y="0" width="80" height="20" backcolor="#B6CBE2" uuid="fe2ab752-bbac-42ea-acae-32bf706b440d">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fac_no_second_honor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="572" y="0" width="80" height="20" backcolor="#B6CBE2" uuid="2a888dc6-8a9e-45b8-89ec-15375522dbbc">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fac_no_total_honor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="332" height="20" backcolor="#B6CBE2" uuid="44d3934f-4289-4080-a7aa-8110dda96d49">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement>
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{faculty_name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="332" y="0" width="80" height="20" backcolor="#B6CBE2" uuid="b096341a-7ce4-48d6-8071-78f4acb66c12">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fac_no_graduate}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="412" y="0" width="80" height="20" backcolor="#B6CBE2" uuid="ff3d60b3-8c81-4dd5-94f6-f9a34f915719">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fac_no_first_honor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="652" y="0" width="150" height="20" backcolor="#B6CBE2" uuid="490e54d1-8f4f-4751-9aef-6f5e265f3a8d">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fac_percent_of_honor}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Department Group">
+		<groupExpression><![CDATA[$F{department_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="412" y="0" width="80" height="20" backcolor="#DCE6F1" uuid="a676c4ac-52c3-44f3-b706-06d47c7ad7df">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{dep_no_first_honor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="572" y="0" width="80" height="20" backcolor="#DCE6F1" uuid="5a15e280-1cd3-4ce9-827c-ea94cdec73a2">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{dep_no_total_honor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="492" y="0" width="80" height="20" backcolor="#DCE6F1" uuid="3dd17dac-e7d3-40fa-b44c-d0ef32ae9513">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{dep_no_second_honor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="652" y="0" width="150" height="20" backcolor="#DCE6F1" uuid="0fd8fcc4-6ca1-4251-8ea0-400c345c5ea0">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{dep_percent_of_honor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="332" height="20" backcolor="#DCE6F1" uuid="88b791ab-f5b2-492c-84ec-8ed49fa11ec4">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement>
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA["   "+$F{department_name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="332" y="0" width="80" height="20" backcolor="#DCE6F1" uuid="ec0ea798-7e3f-4d55-8b7a-8b62780ec561">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{dep_no_graduate}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Project Group">
+		<groupExpression><![CDATA[$F{project_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="572" y="0" width="80" height="20" backcolor="#EDF2F8" uuid="a834dc6c-f2b1-4a75-9b9e-e6e75e08e279">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{pro_no_total_honor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="332" y="0" width="80" height="20" backcolor="#EDF2F8" uuid="af32185a-aead-4f5a-947a-70dab07fd74d">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{pro_no_graduate}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="332" height="20" backcolor="#EDF2F8" uuid="bcc7ce43-f553-4826-a2f8-11044a793fc2">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement>
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA["      "+$F{project_name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="492" y="0" width="80" height="20" backcolor="#EDF2F8" uuid="a8eba6ca-fd2b-453c-bde0-a366e0e29df7">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{pro_no_second_honor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="652" y="0" width="150" height="20" backcolor="#EDF2F8" uuid="4bf589ab-f901-4bf9-ba72-55801b8b2481">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{pro_percent_of_honor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="412" y="0" width="80" height="20" backcolor="#EDF2F8" uuid="9d82d059-428b-40d4-b50d-ff855108d7f9">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{pro_no_first_honor}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageFooter>
+		<band height="30">
+			<textField>
+				<reportElement x="0" y="0" width="802" height="30" uuid="ffc72024-1bc0-4e01-a23a-75f8453381ed"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["- "+$V{PAGE_NUMBER}+" -"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
