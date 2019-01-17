@@ -44,8 +44,8 @@ FROM
 		, SUM(no_of_total_honor) as no_of_total_honor
 		, ((SUM(no_of_total_honor)*100)/SUM(no_of_graduate)) as percent_of_honor
 		FROM honor_bachelor_report
-		WHERE ( academic_year = FROM_BASE64($P{param_year}) OR FROM_BASE64($P{param_year}) = '' )
-		AND ( faculty_name = FROM_BASE64($P{param_faculty_name}) OR FROM_BASE64($P{param_faculty_name}) = ''  )
+		WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
+		AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
 		GROUP BY faculty_name, academic_year
 ) faculty
 LEFT JOIN 
@@ -59,8 +59,8 @@ LEFT JOIN
 		, SUM(no_of_total_honor) as no_of_total_honor
 		, ((SUM(no_of_total_honor)*100)/SUM(no_of_graduate)) as percent_of_honor
 		FROM honor_bachelor_report
-		WHERE ( academic_year = FROM_BASE64($P{param_year}) OR FROM_BASE64($P{param_year}) = '' )
-		AND ( faculty_name = FROM_BASE64($P{param_faculty_name}) OR FROM_BASE64($P{param_faculty_name}) = ''  )
+		WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
+		AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
 		GROUP BY faculty_name, department_name, academic_year
 ) depertment ON depertment.faculty_name = faculty.faculty_name
 AND depertment.academic_year = faculty.academic_year
@@ -76,8 +76,8 @@ LEFT JOIN
 		, no_of_total_honor
 		, percent_of_honor as percent_of_honor
 		FROM honor_bachelor_report
-		WHERE ( academic_year = FROM_BASE64($P{param_year}) OR FROM_BASE64($P{param_year}) = '' )
-		AND ( faculty_name = FROM_BASE64($P{param_faculty_name}) OR FROM_BASE64($P{param_faculty_name}) = ''  )
+		WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
+		AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
 ) project ON project.faculty_name = faculty.faculty_name
 AND project.department_name = depertment.department_name
 AND project.academic_year = faculty.academic_year
@@ -90,8 +90,8 @@ LEFT JOIN
 		, SUM(no_of_total_honor) as no_of_total_honor
 		, ((SUM(no_of_total_honor)*100)/SUM(no_of_graduate)) as percent_of_honor
 		FROM honor_bachelor_report
-		WHERE ( academic_year = FROM_BASE64($P{param_year}) OR FROM_BASE64($P{param_year}) = '' )
-		AND ( faculty_name = FROM_BASE64($P{param_faculty_name}) OR FROM_BASE64($P{param_faculty_name}) = ''  )
+		WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
+		AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
 		GROUP BY academic_year
 ) total ON faculty.academic_year = total.academic_year
 ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, depertment.department_name ASC, project.project_name ASC]]>

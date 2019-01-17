@@ -69,19 +69,9 @@ class JasperController extends Controller
             Log::info(' from POST');
             Log::info($params);
         }
-        /*
-        $params1 = json_decode($request->getContent(), true);
-        Log::info($params1);
-        $params2 = Input::all();
-        Log::info($params2);
-        $params = $params1;
-        Log::info($params);
-        */
+
         $command = 'java -jar '.base_path('jasperStarter/lib/jasperstarter.jar').'  pr '.base_path('resources/jasper/'.$template_name.'.jasper')
             .'  -f '.$template_format.'  -o '.base_path('resources/generate/'.$name_gen);
-        //shell_exec('java -jar '.base_path('resources/JasperStarter/lib/jasperstarter.jar').'  pr /Users/imake/WORK/PROJECT/GJ/Jasper/jasper_service_api/resources/jasper/CherryTest.jasper  -f pdf  -o /Users/imake/WORK/PROJECT/GJ/Jasper/jasper_service_api/resources/jasper/CherryTest2');
-        //shell_exec('java -jar '.base_path('vendor/cossou/jasperphp/src/JasperStarter/lib/jasperstarter.jar').'  pr /Users/imake/WORK/PROJECT/GJ/Jasper/jasper_service_api/resources/jasper/CherryTest.jasper  -f pdf  -o /Users/imake/WORK/PROJECT/GJ/Jasper/jasper_service_api/resources/jasper/CherryTest2');
-        //shell_exec('java -jar '.base_path('vendor/imake/JasperStarter/lib/jasperstarter.jar').'  pr /Users/imake/WORK/PROJECT/GJ/Jasper/jasper_service_api/resources/jasper/CherryTest.jasper  -f pdf  -o /Users/imake/WORK/PROJECT/GJ/Jasper/jasper_service_api/resources/jasper/CherryTest2');
 
      if(!empty($used_connection) && $used_connection == '1') {
          if (!empty($db_connection) && strlen(trim($db_connection)) > 0) {
@@ -112,7 +102,7 @@ class JasperController extends Controller
                 if (!in_array($key, $ignore_param))
 
                   // เข้ารหัส MD5 ให้กับข้อมูล parameter ที่จะส่งไปยัง report เนื่องจาก command line ใช้ภาษาไทยไม่ได้
-                  $values = DB::select("SELECT TO_BASE64('".$value."') as value");
+                  $values = DB::select("SELECT SHA1('".$value."') as value");
                   $command .= $key.'='.$values[0]->value.' ';
             }
         }
