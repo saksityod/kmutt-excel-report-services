@@ -29,6 +29,8 @@ Route::post('NewStudent/Export/Percent', 'NewStudentReportController@ExportNewPe
 // All Student Report
 Route::get('AllStudent/YearList', 'AllStudentReportController@YearList');
 Route::get('AllStudent/FacultyList', 'AllStudentReportController@FacultyList');
+Route::get('AllStudent/DepartmentList', 'AllStudentReportController@DepartmentList');
+Route::get('AllStudent/EducationList', 'AllStudentReportController@EducationList');
 Route::post('AllStudent/Import', 'AllStudentReportController@ImportAllExcel');
 Route::post('AllStudent/Export', 'AllStudentReportController@ExportAllExcel');
 Route::post('AllStudent/Import/Percent', 'AllStudentReportController@ImportAllPercentExcel');

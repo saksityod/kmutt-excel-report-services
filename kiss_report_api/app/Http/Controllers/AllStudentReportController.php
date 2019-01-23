@@ -319,4 +319,40 @@ class AllStudentReportController extends Controller
       return response()->json($Faculty);
   }
 
+  public function DepartmentList(Request $request)
+  {
+      $query = "SELECT department_name
+        FROM all_student_report
+        WHERE 1 = 1 ";
+
+      empty($request->param_year) ?: ($query .= " AND academic_year = ".$request->param_year." ");
+      empty($request->param_faculty) ?: ($query .= " AND faculty_name = '".$request->param_faculty."' ");
+
+      $Department = DB::select($query." GROUP BY department_name
+            ORDER BY department_name ASC");
+
+      return response()->json($Department);
+  }
+
+  public function EducationList(Request $request)
+  {
+      $query = "SELECT (CASE WHEN education_name LIKE '%ตรี%' THEN 1 ELSE
+        	(CASE WHEN education_name LIKE '%โท%' THEN 2 ELSE
+        		(CASE WHEN education_name LIKE '%เอก%' THEN 3 ELSE 0 END)
+        	END)
+        END) as education_id
+        , education_name
+        FROM all_student_report
+        WHERE 1 = 1 ";
+
+      empty($request->param_year) ?: ($query .= " AND academic_year = ".$request->param_year." ");
+      empty($request->param_faculty) ?: ($query .= " AND faculty_name = '".$request->param_faculty."' ");
+      empty($request->param_department) ?: ($query .= " AND department_name = '".$request->param_department."' ");
+
+      $Education = DB::select($query." GROUP BY education_name
+            ORDER BY 1 ASC");
+
+      return response()->json($Education);
+  }
+
 }
