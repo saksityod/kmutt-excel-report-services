@@ -125,9 +125,9 @@ class AllStudentReportController extends Controller
       empty($request->param_faculty) ?: ($query .= " AND faculty_name = '".$request->param_faculty."' ");
       empty($request->param_department) ?: ($query .= " AND department_name = '".$request->param_department."' ");
 
-      if ($request->param_education == 1) { $query .= " AND education_name LIKE '%ตรี%' " }
-      else if ($request->param_education == 2) { $query .= " AND education_name LIKE '%โท%' " }
-      else if ($request->param_education == 3) { $query .= " AND education_name LIKE '%เอก%' " }
+      if ($request->param_education == 1) { $query .= " AND education_name LIKE '%ตรี%' "; }
+      else if ($request->param_education == 2) { $query .= " AND education_name LIKE '%โท%' "; }
+      else if ($request->param_education == 3) { $query .= " AND education_name LIKE '%เอก%' "; }
 
       $items = DB::select($query." ORDER BY academic_year DESC, faculty_name ASC
               , department_name ASC, project_name ASC, education_name ASC");
