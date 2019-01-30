@@ -101,10 +101,17 @@ class JasperController extends Controller
             foreach ($params as $key => $value) {
                 if (!in_array($key, $ignore_param))
 
-                  // เข้ารหัส MD5 ให้กับข้อมูล parameter ที่จะส่งไปยัง report เนื่องจาก command line ใช้ภาษาไทยไม่ได้
+                  // เข้ารหัส SHA1 ให้กับข้อมูล parameter ที่จะส่งไปยัง report เนื่องจาก command line ใช้ภาษาไทยไม่ได้
                   $values = DB::select("SELECT SHA1('".$value."') as value");
                   $command .= $key.'='.$values[0]->value.' ';
             }
+
+            if(!empty($request->subreport_bundle)){
+        			if($request->subreport_bundle == "1"){
+                    $command .= 'subreport_path='.base_path("resources/jasper").' ';
+        				    // $params['subreport_path'] =  base_path("resources/jasper");
+        			}
+		        }
         }
         shell_exec($command);
         Log::info($command);

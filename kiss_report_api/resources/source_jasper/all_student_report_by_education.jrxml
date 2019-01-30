@@ -1,0 +1,567 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="honor_bachelor_report" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ea7fe8fe-762b-45e4-9e69-1b6cd6f570ac">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kiss_excel_report"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
+	<parameter name="param_year" class="java.lang.String"/>
+	<parameter name="param_faculty_name" class="java.lang.String"/>
+	<parameter name="param_department_name" class="java.lang.String"/>
+	<parameter name="param_education" class="java.lang.String"/>
+	<parameter name="param_type" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT faculty.faculty_name
+, department.department_name
+, project.project_name
+, faculty.academic_year
+
+, faculty.student_plan_Bachelor as fac_student_plan_Bachelor
+, faculty.student_Bachelor as fac_student_Bachelor
+, faculty.student_plan_Masters as fac_student_plan_Masters
+, faculty.student_Masters as fac_student_Masters
+, faculty.student_plan_Doctoral as fac_student_plan_Doctoral
+, faculty.student_Doctoral as fac_student_Doctoral
+
+, department.student_plan_Bachelor as dep_student_plan_Bachelor
+, department.student_Bachelor as dep_student_Bachelor
+, department.student_plan_Masters as dep_student_plan_Masters
+, department.student_Masters as dep_student_Masters
+, department.student_plan_Doctoral as dep_student_plan_Doctoral
+, department.student_Doctoral as dep_student_Doctoral
+
+, project.student_plan_Bachelor as pro_student_plan_Bachelor
+, project.student_Bachelor as pro_student_Bachelor
+, project.student_plan_Masters as pro_student_plan_Masters
+, project.student_Masters as pro_student_Masters
+, project.student_plan_Doctoral as pro_student_plan_Doctoral
+, project.student_Doctoral as pro_student_Doctoral
+
+, total.student_plan_Bachelor as total_student_plan_Bachelor
+, total.student_Bachelor as total_student_Bachelor
+, total.student_percent_Bachelor as total_student_percent_Bachelor
+, total.student_plan_Masters as total_student_plan_Masters
+, total.student_Masters as total_student_Masters
+, total.student_percent_Masters as total_student_percent_Masters
+, total.student_plan_Doctoral as total_student_plan_Doctoral
+, total.student_Doctoral as total_student_Doctoral
+, total.student_percent_Doctoral as total_student_percent_Doctoral
+FROM 
+(
+		SELECT fac.faculty_name
+		, fac.academic_year
+		, MAX(fac.student_plan_Bachelor) as student_plan_Bachelor
+		, MAX(fac.student_Bachelor) as student_Bachelor
+		, MAX(fac.student_plan_Masters) as student_plan_Masters
+		, MAX(fac.student_Masters) as student_Masters
+		, MAX(fac.student_plan_Doctoral) as student_plan_Doctoral
+		, MAX(fac.student_Doctoral) as student_Doctoral
+		FROM (
+				SELECT faculty_name
+				, education_name
+				, academic_year
+				, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Bachelor
+				, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student) ELSE 0 END) as student_Bachelor
+				, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Masters
+				, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student) ELSE 0 END) as student_Masters
+				, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Doctoral
+				, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student) ELSE 0 END) as student_Doctoral
+				FROM all_student_report
+				WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
+				AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
+				AND ( SHA1(department_name) = ($P{param_department_name}) OR ($P{param_department_name}) = SHA1('') )
+				GROUP BY faculty_name, education_name, academic_year
+		) fac
+		GROUP BY fac.faculty_name, fac.academic_year
+) faculty 
+LEFT JOIN 
+(
+		SELECT dep.faculty_name
+			, dep.department_name
+			, dep.academic_year
+			, MAX(dep.student_plan_Bachelor) as student_plan_Bachelor
+			, MAX(dep.student_Bachelor) as student_Bachelor
+			, MAX(dep.student_plan_Masters) as student_plan_Masters
+			, MAX(dep.student_Masters) as student_Masters
+			, MAX(dep.student_plan_Doctoral) as student_plan_Doctoral
+			, MAX(dep.student_Doctoral) as student_Doctoral
+			FROM (
+					SELECT faculty_name
+					, department_name
+					, education_name
+					, academic_year
+					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Bachelor
+					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student) ELSE 0 END) as student_Bachelor
+					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Masters
+					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student) ELSE 0 END) as student_Masters
+					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Doctoral
+					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student) ELSE 0 END) as student_Doctoral
+					FROM all_student_report
+					WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
+					AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
+					AND ( SHA1(department_name) = ($P{param_department_name}) OR ($P{param_department_name}) = SHA1('') )
+					GROUP BY faculty_name, department_name, education_name, academic_year
+			) dep
+		GROUP BY dep.faculty_name, dep.department_name, dep.academic_year
+) department ON department.faculty_name = faculty.faculty_name 
+AND department.academic_year = faculty.academic_year
+LEFT JOIN 
+(
+		SELECT pro.faculty_name
+			, pro.department_name
+			, pro.project_name
+			, pro.academic_year
+			, MAX(pro.student_plan_Bachelor) as student_plan_Bachelor
+			, MAX(pro.student_Bachelor) as student_Bachelor
+			, MAX(pro.student_plan_Masters) as student_plan_Masters
+			, MAX(pro.student_Masters) as student_Masters
+			, MAX(pro.student_plan_Doctoral) as student_plan_Doctoral
+			, MAX(pro.student_Doctoral) as student_Doctoral
+			FROM (
+					SELECT faculty_name
+					, department_name
+					, project_name
+					, education_name
+					, academic_year
+					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Bachelor
+					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student) ELSE 0 END) as student_Bachelor
+					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Masters
+					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student) ELSE 0 END) as student_Masters
+					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Doctoral
+					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student) ELSE 0 END) as student_Doctoral
+					FROM all_student_report
+					WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
+					AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
+					AND ( SHA1(department_name) = ($P{param_department_name}) OR ($P{param_department_name}) = SHA1('') )
+					GROUP BY faculty_name, department_name, project_name, education_name, academic_year
+			) pro
+		GROUP BY pro.faculty_name, pro.department_name, pro.project_name, pro.academic_year
+) project ON project.faculty_name = faculty.faculty_name
+AND project.department_name = department.department_name
+AND project.academic_year = faculty.academic_year
+LEFT JOIN 
+(
+		SELECT result.academic_year
+		, MAX(result.student_plan_Bachelor) as student_plan_Bachelor
+		, MAX(result.student_Bachelor) as student_Bachelor
+		, MAX(result.student_percent_Bachelor) as student_percent_Bachelor
+		
+		, MAX(result.student_plan_Masters) as student_plan_Masters
+		, MAX(result.student_Masters) as student_Masters
+		, MAX(result.student_percent_Masters) as student_percent_Masters
+		
+		, MAX(result.student_plan_Doctoral) as student_plan_Doctoral
+		, MAX(result.student_Doctoral) as student_Doctoral
+		, MAX(result.student_percent_Doctoral) as student_percent_Doctoral
+		FROM (
+				SELECT education_name
+				, academic_year
+				, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Bachelor
+				, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student) ELSE 0 END) as student_Bachelor
+				, (CASE WHEN education_name = "ปริญญาตรี" THEN ((SUM(no_of_all_student)*100)/SUM(no_of_all_student_plan)) ELSE 0 END) as student_percent_Bachelor
+				, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Masters
+				, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student) ELSE 0 END) as student_Masters
+				, (CASE WHEN education_name = "ปริญญาโท" THEN ((SUM(no_of_all_student)*100)/SUM(no_of_all_student_plan)) ELSE 0 END) as student_percent_Masters
+				, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Doctoral
+				, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student) ELSE 0 END) as student_Doctoral
+				, (CASE WHEN education_name = "ปริญญาเอก" THEN ((SUM(no_of_all_student)*100)/SUM(no_of_all_student_plan)) ELSE 0 END) as student_percent_Doctoral
+				FROM all_student_report
+				WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
+				AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
+				AND ( SHA1(department_name) = ($P{param_department_name}) OR ($P{param_department_name}) = SHA1('') )
+				GROUP BY education_name, academic_year
+		) result
+		GROUP BY result.academic_year
+) total ON faculty.academic_year = total.academic_year
+ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.department_name ASC, project.project_name ASC]]>
+	</queryString>
+	<field name="faculty_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="faculty_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="all_student_report"/>
+	</field>
+	<field name="department_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="department_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="all_student_report"/>
+	</field>
+	<field name="project_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="project_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="all_student_report"/>
+	</field>
+	<field name="academic_year" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="academic_year"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="all_student_report"/>
+	</field>
+	<field name="fac_student_plan_Bachelor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_student_plan_Bachelor"/>
+	</field>
+	<field name="fac_student_Bachelor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_student_Bachelor"/>
+	</field>
+	<field name="fac_student_plan_Masters" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_student_plan_Masters"/>
+	</field>
+	<field name="fac_student_Masters" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_student_Masters"/>
+	</field>
+	<field name="fac_student_plan_Doctoral" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_student_plan_Doctoral"/>
+	</field>
+	<field name="fac_student_Doctoral" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_student_Doctoral"/>
+	</field>
+	<field name="dep_student_plan_Bachelor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="dep_student_plan_Bachelor"/>
+	</field>
+	<field name="dep_student_Bachelor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="dep_student_Bachelor"/>
+	</field>
+	<field name="dep_student_plan_Masters" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="dep_student_plan_Masters"/>
+	</field>
+	<field name="dep_student_Masters" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="dep_student_Masters"/>
+	</field>
+	<field name="dep_student_plan_Doctoral" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="dep_student_plan_Doctoral"/>
+	</field>
+	<field name="dep_student_Doctoral" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="dep_student_Doctoral"/>
+	</field>
+	<field name="pro_student_plan_Bachelor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pro_student_plan_Bachelor"/>
+	</field>
+	<field name="pro_student_Bachelor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pro_student_Bachelor"/>
+	</field>
+	<field name="pro_student_plan_Masters" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pro_student_plan_Masters"/>
+	</field>
+	<field name="pro_student_Masters" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pro_student_Masters"/>
+	</field>
+	<field name="pro_student_plan_Doctoral" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pro_student_plan_Doctoral"/>
+	</field>
+	<field name="pro_student_Doctoral" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pro_student_Doctoral"/>
+	</field>
+	<field name="total_student_plan_Bachelor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="total_student_plan_Bachelor"/>
+	</field>
+	<field name="total_student_Bachelor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="total_student_Bachelor"/>
+	</field>
+	<field name="total_student_percent_Bachelor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="total_student_percent_Bachelor"/>
+	</field>
+	<field name="total_student_plan_Masters" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="total_student_plan_Masters"/>
+	</field>
+	<field name="total_student_Masters" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="total_student_Masters"/>
+	</field>
+	<field name="total_student_percent_Masters" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="total_student_percent_Masters"/>
+	</field>
+	<field name="total_student_plan_Doctoral" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="total_student_plan_Doctoral"/>
+	</field>
+	<field name="total_student_Doctoral" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="total_student_Doctoral"/>
+	</field>
+	<field name="total_student_percent_Doctoral" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="total_student_percent_Doctoral"/>
+	</field>
+	<group name="Year Group" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{academic_year}]]></groupExpression>
+		<groupHeader>
+			<band height="120">
+				<textField>
+					<reportElement x="0" y="0" width="802" height="50" uuid="b6d6dd11-ed94-41c8-88de-6d05c0eade42"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="18" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["ตารางเปรียบเทียบจำนวนนักศึกษาทั้งหมดกับจำนวนตามแผน ปีการศึกษา "+$F{academic_year}+" จำแนกตามคณะ ภาควิชา สาขาวิชา และระดับปริญญา"]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="60" width="580" height="60" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="83489c22-c390-4dc0-b16c-a9939a7f05d0">
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[คณะ / ภาควิชา / สาขาวิชา]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="691" y="80" width="111" height="40" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="9d65591b-3ccb-4d52-b469-a2ec193d4646">
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[จริง]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="580" y="80" width="111" height="40" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="50d31e5e-2b73-4d49-af85-658af3f3f241">
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[แผน]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Opaque" x="580" y="60" width="222" height="20" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="2e4f1491-96d3-4ff2-bcfe-5d4ed1ce2b3e">
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{param_education}.equalsIgnoreCase("356a192b7913b04c54574d18c28d46e6395428ab") ?  "ปริญญาตรี": 
+( $P{param_education}.equalsIgnoreCase("da4b9237bacccdf19c0760cab7aec4a8359010b0") ? "ปริญญาโท" : "ปริญญาเอก" )]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="40">
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="580" y="20" width="111" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="1d7cac80-93e8-4652-927c-684f31d2c096">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["100.00"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="580" height="40" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="90b00030-6652-497b-93e5-c5d9478b06d4">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["รวม"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="691" y="0" width="111" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="77d884d7-93b4-4320-be2a-84232189f54a">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{param_education}.equalsIgnoreCase("356a192b7913b04c54574d18c28d46e6395428ab") ?  $F{total_student_Bachelor} : 
+($P{param_education}.equalsIgnoreCase("da4b9237bacccdf19c0760cab7aec4a8359010b0") ? $F{total_student_Masters} : $F{total_student_Doctoral} )]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="580" y="0" width="111" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="a94cdbc6-3b09-4d99-939e-ef59508eeabd">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{param_education}.equalsIgnoreCase("356a192b7913b04c54574d18c28d46e6395428ab") ?  $F{total_student_plan_Bachelor} : 
+( $P{param_education}.equalsIgnoreCase("da4b9237bacccdf19c0760cab7aec4a8359010b0") ? $F{total_student_plan_Masters} : $F{total_student_plan_Doctoral} )]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="691" y="20" width="111" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="4e7e4c90-fb01-4689-9292-feff0a029840">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{param_education}.equalsIgnoreCase("356a192b7913b04c54574d18c28d46e6395428ab") ?  $F{total_student_percent_Bachelor} : 
+( $P{param_education}.equalsIgnoreCase("da4b9237bacccdf19c0760cab7aec4a8359010b0") ? $F{total_student_percent_Masters} : $F{total_student_percent_Doctoral} )]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<group name="Faculty Group">
+		<groupExpression><![CDATA[$F{faculty_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="580" y="0" width="111" height="20" isRemoveLineWhenBlank="true" backcolor="#B6CBE2" uuid="5e362798-cfe0-4573-a8a2-81119c0fe30c">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{param_education}.equalsIgnoreCase("356a192b7913b04c54574d18c28d46e6395428ab") ?  $F{fac_student_plan_Bachelor} : 
+( $P{param_education}.equalsIgnoreCase("da4b9237bacccdf19c0760cab7aec4a8359010b0") ? $F{fac_student_plan_Masters} : $F{fac_student_plan_Doctoral} )]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="580" height="20" isRemoveLineWhenBlank="true" backcolor="#B6CBE2" uuid="cfde5d9f-197d-4e01-8878-7f006023094d">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement>
+						<font fontName="TH SarabunPSK" size="14"/>
+						<paragraph firstLineIndent="3" leftIndent="0"/>
+					</textElement>
+					<textFieldExpression><![CDATA[($P{param_type}.equalsIgnoreCase("ce9f44bc3d348133b47226685a8f75bbf17e757b") ? "" : "  ")+$F{faculty_name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="691" y="0" width="111" height="20" isRemoveLineWhenBlank="true" backcolor="#B6CBE2" uuid="77a8f8f5-ab94-4356-887f-40d8f3045b16">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{param_education}.equalsIgnoreCase("356a192b7913b04c54574d18c28d46e6395428ab") ?  $F{fac_student_Bachelor}: 
+( $P{param_education}.equalsIgnoreCase("da4b9237bacccdf19c0760cab7aec4a8359010b0") ? $F{fac_student_Masters} : $F{fac_student_Doctoral} )]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Department Group">
+		<groupExpression><![CDATA[$F{department_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="691" y="0" width="111" height="20" isRemoveLineWhenBlank="true" backcolor="#DCE6F1" uuid="282c152f-f6d0-49cd-8f84-91ac7bc3795e">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{param_education}.equalsIgnoreCase("356a192b7913b04c54574d18c28d46e6395428ab") ?  $F{dep_student_Bachelor} : 
+( $P{param_education}.equalsIgnoreCase("da4b9237bacccdf19c0760cab7aec4a8359010b0") ? $F{dep_student_Masters} : $F{dep_student_Doctoral} )]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="580" y="0" width="111" height="20" isRemoveLineWhenBlank="true" backcolor="#DCE6F1" uuid="1b3017e4-6091-42ac-a95a-0efa1a470327">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{param_education}.equalsIgnoreCase("356a192b7913b04c54574d18c28d46e6395428ab")?  $F{dep_student_plan_Bachelor} : 
+( $P{param_education}.equalsIgnoreCase("da4b9237bacccdf19c0760cab7aec4a8359010b0") ? $F{dep_student_plan_Masters} : $F{dep_student_plan_Doctoral} )]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="580" height="20" isRemoveLineWhenBlank="true" backcolor="#DCE6F1" uuid="63f383dc-7748-4ea8-9fa1-6890bfc4e5c7">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement>
+						<font fontName="TH SarabunPSK" size="14"/>
+						<paragraph firstLineIndent="10" leftIndent="0"/>
+					</textElement>
+					<textFieldExpression><![CDATA[($P{param_type}.equalsIgnoreCase("ce9f44bc3d348133b47226685a8f75bbf17e757b") ? "" : "     ")+$F{department_name}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<group name="Project Group" keepTogether="true">
+		<groupExpression><![CDATA[$F{project_name}]]></groupExpression>
+		<groupHeader>
+			<band height="20">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="580" height="20" isRemoveLineWhenBlank="true" backcolor="#EDF2F8" uuid="0b690103-9c50-4670-908c-642d98fd24e8">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement>
+						<font fontName="TH SarabunPSK" size="14"/>
+						<paragraph firstLineIndent="20" leftIndent="0"/>
+					</textElement>
+					<textFieldExpression><![CDATA[($P{param_type}.equalsIgnoreCase("ce9f44bc3d348133b47226685a8f75bbf17e757b") ? "" : "       ")+$F{project_name}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="580" y="0" width="111" height="20" isRemoveLineWhenBlank="true" backcolor="#EDF2F8" uuid="b20062f7-336a-4a46-9dc7-e010ae716e96">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{param_education}.equalsIgnoreCase("356a192b7913b04c54574d18c28d46e6395428ab") ?  $F{pro_student_plan_Bachelor} : 
+( $P{param_education}.equalsIgnoreCase("da4b9237bacccdf19c0760cab7aec4a8359010b0") ? $F{pro_student_plan_Masters} : $F{pro_student_plan_Doctoral} )]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="691" y="0" width="111" height="20" isRemoveLineWhenBlank="true" backcolor="#EDF2F8" uuid="268d65c9-0bd2-434c-812c-f58427accbe2">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? false : true]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="14"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$P{param_education}.equalsIgnoreCase("356a192b7913b04c54574d18c28d46e6395428ab") ?  $F{pro_student_Bachelor} : 
+( $P{param_education}.equalsIgnoreCase("da4b9237bacccdf19c0760cab7aec4a8359010b0") ? $F{pro_student_Masters} : $F{pro_student_Doctoral} )]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+</jasperReport>
