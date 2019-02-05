@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="honor_bachelor_report" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ea7fe8fe-762b-45e4-9e69-1b6cd6f570ac">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="graduate_student_report" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ea7fe8fe-762b-45e4-9e69-1b6cd6f570ac">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kiss_excel_report"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
@@ -67,13 +67,13 @@ FROM
 				SELECT faculty_name
 				, education_name
 				, academic_year
-				, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Bachelor
-				, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student) ELSE 0 END) as student_Bachelor
-				, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Masters
-				, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student) ELSE 0 END) as student_Masters
-				, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Doctoral
-				, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student) ELSE 0 END) as student_Doctoral
-				FROM all_student_report
+				, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_graduate_student_plan) ELSE 0 END) as student_plan_Bachelor
+				, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_graduate_student) ELSE 0 END) as student_Bachelor
+				, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_graduate_student_plan) ELSE 0 END) as student_plan_Masters
+				, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_graduate_student) ELSE 0 END) as student_Masters
+				, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_graduate_student_plan) ELSE 0 END) as student_plan_Doctoral
+				, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_graduate_student) ELSE 0 END) as student_Doctoral
+				FROM graduate_student_report
 				WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
 				AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
 				AND ( SHA1(department_name) = ($P{param_department_name}) OR ($P{param_department_name}) = SHA1('') )
@@ -97,13 +97,13 @@ LEFT JOIN
 					, department_name
 					, education_name
 					, academic_year
-					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Bachelor
-					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student) ELSE 0 END) as student_Bachelor
-					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Masters
-					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student) ELSE 0 END) as student_Masters
-					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Doctoral
-					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student) ELSE 0 END) as student_Doctoral
-					FROM all_student_report
+					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_graduate_student_plan) ELSE 0 END) as student_plan_Bachelor
+					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_graduate_student) ELSE 0 END) as student_Bachelor
+					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_graduate_student_plan) ELSE 0 END) as student_plan_Masters
+					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_graduate_student) ELSE 0 END) as student_Masters
+					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_graduate_student_plan) ELSE 0 END) as student_plan_Doctoral
+					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_graduate_student) ELSE 0 END) as student_Doctoral
+					FROM graduate_student_report
 					WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
 					AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
 					AND ( SHA1(department_name) = ($P{param_department_name}) OR ($P{param_department_name}) = SHA1('') )
@@ -130,13 +130,13 @@ LEFT JOIN
 					, project_name
 					, education_name
 					, academic_year
-					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Bachelor
-					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student) ELSE 0 END) as student_Bachelor
-					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Masters
-					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student) ELSE 0 END) as student_Masters
-					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Doctoral
-					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student) ELSE 0 END) as student_Doctoral
-					FROM all_student_report
+					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_graduate_student_plan) ELSE 0 END) as student_plan_Bachelor
+					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_graduate_student) ELSE 0 END) as student_Bachelor
+					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_graduate_student_plan) ELSE 0 END) as student_plan_Masters
+					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_graduate_student) ELSE 0 END) as student_Masters
+					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_graduate_student_plan) ELSE 0 END) as student_plan_Doctoral
+					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_graduate_student) ELSE 0 END) as student_Doctoral
+					FROM graduate_student_report
 					WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
 					AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
 					AND ( SHA1(department_name) = ($P{param_department_name}) OR ($P{param_department_name}) = SHA1('') )
@@ -163,16 +163,16 @@ LEFT JOIN
 		FROM (
 				SELECT education_name
 				, academic_year
-				, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Bachelor
-				, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student) ELSE 0 END) as student_Bachelor
-				, (CASE WHEN education_name = "ปริญญาตรี" THEN ((SUM(no_of_all_student)*100)/SUM(no_of_all_student_plan)) ELSE 0 END) as student_percent_Bachelor
-				, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Masters
-				, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student) ELSE 0 END) as student_Masters
-				, (CASE WHEN education_name = "ปริญญาโท" THEN ((SUM(no_of_all_student)*100)/SUM(no_of_all_student_plan)) ELSE 0 END) as student_percent_Masters
-				, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Doctoral
-				, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student) ELSE 0 END) as student_Doctoral
-				, (CASE WHEN education_name = "ปริญญาเอก" THEN ((SUM(no_of_all_student)*100)/SUM(no_of_all_student_plan)) ELSE 0 END) as student_percent_Doctoral
-				FROM all_student_report
+				, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_graduate_student_plan) ELSE 0 END) as student_plan_Bachelor
+				, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_graduate_student) ELSE 0 END) as student_Bachelor
+				, (CASE WHEN education_name = "ปริญญาตรี" THEN ((SUM(no_of_graduate_student)*100)/SUM(no_of_graduate_student_plan)) ELSE 0 END) as student_percent_Bachelor
+				, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_graduate_student_plan) ELSE 0 END) as student_plan_Masters
+				, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_graduate_student) ELSE 0 END) as student_Masters
+				, (CASE WHEN education_name = "ปริญญาโท" THEN ((SUM(no_of_graduate_student)*100)/SUM(no_of_graduate_student_plan)) ELSE 0 END) as student_percent_Masters
+				, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_graduate_student_plan) ELSE 0 END) as student_plan_Doctoral
+				, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_graduate_student) ELSE 0 END) as student_Doctoral
+				, (CASE WHEN education_name = "ปริญญาเอก" THEN ((SUM(no_of_graduate_student)*100)/SUM(no_of_graduate_student_plan)) ELSE 0 END) as student_percent_Doctoral
+				FROM graduate_student_report
 				WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
 				AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
 				AND ( SHA1(department_name) = ($P{param_department_name}) OR ($P{param_department_name}) = SHA1('') )
@@ -184,19 +184,19 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 	</queryString>
 	<field name="faculty_name" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="faculty_name"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="all_student_report"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="graduate_student_report"/>
 	</field>
 	<field name="department_name" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="department_name"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="all_student_report"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="graduate_student_report"/>
 	</field>
 	<field name="project_name" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="project_name"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="all_student_report"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="graduate_student_report"/>
 	</field>
 	<field name="academic_year" class="java.lang.Integer">
 		<property name="com.jaspersoft.studio.field.label" value="academic_year"/>
-		<property name="com.jaspersoft.studio.field.tree.path" value="all_student_report"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="graduate_student_report"/>
 	</field>
 	<field name="fac_student_plan_Bachelor" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="fac_student_plan_Bachelor"/>
@@ -288,7 +288,7 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="TH SarabunPSK" size="18" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA["ตารางเปรียบเทียบจำนวนนักศึกษาทั้งหมดกับจำนวนตามแผน ปีการศึกษา "+$F{academic_year}+" จำแนกตามคณะ ภาควิชา สาขาวิชา และระดับปริญญา"]]></textFieldExpression>
+					<textFieldExpression><![CDATA["ตารางเปรียบเทียบจำนวนผู้สำเร็จการศึกษากับจำนวนตามแผน ปีการศึกษา "+$F{academic_year}+" จำแนกตามคณะ ภาควิชา สาขาวิชา และระดับปริญญา"]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement mode="Opaque" x="0" y="60" width="580" height="60" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="83489c22-c390-4dc0-b16c-a9939a7f05d0">

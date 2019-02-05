@@ -1,9 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="honor_bachelor_report" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ea7fe8fe-762b-45e4-9e69-1b6cd6f570ac">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="all_student_percent_report" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="842" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="ea7fe8fe-762b-45e4-9e69-1b6cd6f570ac">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kiss_excel_report"/>
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="175"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="817"/>
 	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<parameter name="param_year" class="java.lang.String"/>
 	<parameter name="param_faculty_name" class="java.lang.String"/>
 	<parameter name="param_department_name" class="java.lang.String"/>
@@ -17,24 +27,33 @@
 
 , faculty.student_plan_Bachelor as fac_student_plan_Bachelor
 , faculty.student_Bachelor as fac_student_Bachelor
+, faculty.student_percent_Bachelor as fac_student_percent_Bachelor
 , faculty.student_plan_Masters as fac_student_plan_Masters
 , faculty.student_Masters as fac_student_Masters
+, faculty.student_percent_Masters as fac_student_percent_Masters
 , faculty.student_plan_Doctoral as fac_student_plan_Doctoral
 , faculty.student_Doctoral as fac_student_Doctoral
+, faculty.student_percent_Doctoral as fac_student_percent_Doctoral
 
 , department.student_plan_Bachelor as dep_student_plan_Bachelor
 , department.student_Bachelor as dep_student_Bachelor
+, department.student_percent_Bachelor as dep_student_percent_Bachelor
 , department.student_plan_Masters as dep_student_plan_Masters
 , department.student_Masters as dep_student_Masters
+, department.student_percent_Masters as dep_student_percent_Masters
 , department.student_plan_Doctoral as dep_student_plan_Doctoral
 , department.student_Doctoral as dep_student_Doctoral
+, department.student_percent_Doctoral as dep_student_percent_Doctoral
 
 , project.student_plan_Bachelor as pro_student_plan_Bachelor
 , project.student_Bachelor as pro_student_Bachelor
+, project.student_percent_Bachelor as pro_student_percent_Bachelor
 , project.student_plan_Masters as pro_student_plan_Masters
 , project.student_Masters as pro_student_Masters
+, project.student_percent_Masters as pro_student_percent_Masters
 , project.student_plan_Doctoral as pro_student_plan_Doctoral
 , project.student_Doctoral as pro_student_Doctoral
+, project.student_percent_Doctoral as pro_student_percent_Doctoral
 
 , total.student_plan_Bachelor as total_student_plan_Bachelor
 , total.student_Bachelor as total_student_Bachelor
@@ -51,20 +70,28 @@ FROM
 		, fac.academic_year
 		, MAX(fac.student_plan_Bachelor) as student_plan_Bachelor
 		, MAX(fac.student_Bachelor) as student_Bachelor
+		, MAX(fac.student_percent_Bachelor) as student_percent_Bachelor
+		
 		, MAX(fac.student_plan_Masters) as student_plan_Masters
 		, MAX(fac.student_Masters) as student_Masters
+		, MAX(fac.student_percent_Masters) as student_percent_Masters
+		
 		, MAX(fac.student_plan_Doctoral) as student_plan_Doctoral
 		, MAX(fac.student_Doctoral) as student_Doctoral
+		, MAX(fac.student_percent_Doctoral) as student_percent_Doctoral
 		FROM (
 				SELECT faculty_name
 				, education_name
 				, academic_year
 				, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Bachelor
 				, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student) ELSE 0 END) as student_Bachelor
+				, (CASE WHEN education_name = "ปริญญาตรี" THEN ((SUM(no_of_all_student)*100)/SUM(no_of_all_student_plan)) ELSE 0 END) as student_percent_Bachelor
 				, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Masters
 				, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student) ELSE 0 END) as student_Masters
+				, (CASE WHEN education_name = "ปริญญาโท" THEN ((SUM(no_of_all_student)*100)/SUM(no_of_all_student_plan)) ELSE 0 END) as student_percent_Masters
 				, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Doctoral
 				, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student) ELSE 0 END) as student_Doctoral
+				, (CASE WHEN education_name = "ปริญญาเอก" THEN ((SUM(no_of_all_student)*100)/SUM(no_of_all_student_plan)) ELSE 0 END) as student_percent_Doctoral
 				FROM all_student_report
 				WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
 				AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
@@ -80,10 +107,15 @@ LEFT JOIN
 			, dep.academic_year
 			, MAX(dep.student_plan_Bachelor) as student_plan_Bachelor
 			, MAX(dep.student_Bachelor) as student_Bachelor
+			, MAX(dep.student_percent_Bachelor) as student_percent_Bachelor
+			
 			, MAX(dep.student_plan_Masters) as student_plan_Masters
 			, MAX(dep.student_Masters) as student_Masters
+			, MAX(dep.student_percent_Masters) as student_percent_Masters
+			
 			, MAX(dep.student_plan_Doctoral) as student_plan_Doctoral
 			, MAX(dep.student_Doctoral) as student_Doctoral
+			, MAX(dep.student_percent_Doctoral) as student_percent_Doctoral
 			FROM (
 					SELECT faculty_name
 					, department_name
@@ -91,10 +123,13 @@ LEFT JOIN
 					, academic_year
 					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Bachelor
 					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student) ELSE 0 END) as student_Bachelor
+					, (CASE WHEN education_name = "ปริญญาตรี" THEN ((SUM(no_of_all_student)*100)/SUM(no_of_all_student_plan)) ELSE 0 END) as student_percent_Bachelor
 					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Masters
 					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student) ELSE 0 END) as student_Masters
+					, (CASE WHEN education_name = "ปริญญาโท" THEN ((SUM(no_of_all_student)*100)/SUM(no_of_all_student_plan)) ELSE 0 END) as student_percent_Masters
 					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Doctoral
 					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student) ELSE 0 END) as student_Doctoral
+					, (CASE WHEN education_name = "ปริญญาเอก" THEN ((SUM(no_of_all_student)*100)/SUM(no_of_all_student_plan)) ELSE 0 END) as student_percent_Doctoral
 					FROM all_student_report
 					WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
 					AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
@@ -112,10 +147,15 @@ LEFT JOIN
 			, pro.academic_year
 			, MAX(pro.student_plan_Bachelor) as student_plan_Bachelor
 			, MAX(pro.student_Bachelor) as student_Bachelor
+			, MAX(pro.student_percent_Bachelor) as student_percent_Bachelor
+			
 			, MAX(pro.student_plan_Masters) as student_plan_Masters
 			, MAX(pro.student_Masters) as student_Masters
+			, MAX(pro.student_percent_Masters) as student_percent_Masters
+			
 			, MAX(pro.student_plan_Doctoral) as student_plan_Doctoral
 			, MAX(pro.student_Doctoral) as student_Doctoral
+			, MAX(pro.student_percent_Doctoral) as student_percent_Doctoral
 			FROM (
 					SELECT faculty_name
 					, department_name
@@ -124,10 +164,13 @@ LEFT JOIN
 					, academic_year
 					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Bachelor
 					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student) ELSE 0 END) as student_Bachelor
+					, (CASE WHEN education_name = "ปริญญาตรี" THEN ((SUM(no_of_all_student)*100)/SUM(no_of_all_student_plan)) ELSE 0 END) as student_percent_Bachelor
 					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Masters
 					, (CASE WHEN education_name = "ปริญญาโท" THEN SUM(no_of_all_student) ELSE 0 END) as student_Masters
+					, (CASE WHEN education_name = "ปริญญาโท" THEN ((SUM(no_of_all_student)*100)/SUM(no_of_all_student_plan)) ELSE 0 END) as student_percent_Masters
 					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Doctoral
 					, (CASE WHEN education_name = "ปริญญาเอก" THEN SUM(no_of_all_student) ELSE 0 END) as student_Doctoral
+					, (CASE WHEN education_name = "ปริญญาเอก" THEN ((SUM(no_of_all_student)*100)/SUM(no_of_all_student_plan)) ELSE 0 END) as student_percent_Doctoral
 					FROM all_student_report
 					WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
 					AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
@@ -172,7 +215,7 @@ LEFT JOIN
 		) result
 		GROUP BY result.academic_year
 ) total ON faculty.academic_year = total.academic_year
-ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.department_name ASC, project.project_name ASC]]>
+ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC , department.department_name ASC , project.project_name ASC]]>
 	</queryString>
 	<field name="faculty_name" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="faculty_name"/>
@@ -196,11 +239,17 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 	<field name="fac_student_Bachelor" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="fac_student_Bachelor"/>
 	</field>
+	<field name="fac_student_percent_Bachelor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_student_percent_Bachelor"/>
+	</field>
 	<field name="fac_student_plan_Masters" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="fac_student_plan_Masters"/>
 	</field>
 	<field name="fac_student_Masters" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="fac_student_Masters"/>
+	</field>
+	<field name="fac_student_percent_Masters" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_student_percent_Masters"/>
 	</field>
 	<field name="fac_student_plan_Doctoral" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="fac_student_plan_Doctoral"/>
@@ -208,11 +257,17 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 	<field name="fac_student_Doctoral" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="fac_student_Doctoral"/>
 	</field>
+	<field name="fac_student_percent_Doctoral" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_student_percent_Doctoral"/>
+	</field>
 	<field name="dep_student_plan_Bachelor" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="dep_student_plan_Bachelor"/>
 	</field>
 	<field name="dep_student_Bachelor" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="dep_student_Bachelor"/>
+	</field>
+	<field name="dep_student_percent_Bachelor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="dep_student_percent_Bachelor"/>
 	</field>
 	<field name="dep_student_plan_Masters" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="dep_student_plan_Masters"/>
@@ -220,11 +275,17 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 	<field name="dep_student_Masters" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="dep_student_Masters"/>
 	</field>
+	<field name="dep_student_percent_Masters" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="dep_student_percent_Masters"/>
+	</field>
 	<field name="dep_student_plan_Doctoral" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="dep_student_plan_Doctoral"/>
 	</field>
 	<field name="dep_student_Doctoral" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="dep_student_Doctoral"/>
+	</field>
+	<field name="dep_student_percent_Doctoral" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="dep_student_percent_Doctoral"/>
 	</field>
 	<field name="pro_student_plan_Bachelor" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="pro_student_plan_Bachelor"/>
@@ -232,17 +293,26 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 	<field name="pro_student_Bachelor" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="pro_student_Bachelor"/>
 	</field>
+	<field name="pro_student_percent_Bachelor" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pro_student_percent_Bachelor"/>
+	</field>
 	<field name="pro_student_plan_Masters" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="pro_student_plan_Masters"/>
 	</field>
 	<field name="pro_student_Masters" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="pro_student_Masters"/>
 	</field>
+	<field name="pro_student_percent_Masters" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pro_student_percent_Masters"/>
+	</field>
 	<field name="pro_student_plan_Doctoral" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="pro_student_plan_Doctoral"/>
 	</field>
 	<field name="pro_student_Doctoral" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="pro_student_Doctoral"/>
+	</field>
+	<field name="pro_student_percent_Doctoral" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="pro_student_percent_Doctoral"/>
 	</field>
 	<field name="total_student_plan_Bachelor" class="java.math.BigDecimal">
 		<property name="com.jaspersoft.studio.field.label" value="total_student_plan_Bachelor"/>
@@ -274,11 +344,16 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 	<group name="Year Group" isStartNewPage="true" isReprintHeaderOnEachPage="true">
 		<groupExpression><![CDATA[$F{academic_year}]]></groupExpression>
 		<groupHeader>
-			<band height="120">
+			<band height="117">
+				<textField>
+					<reportElement x="0" y="0" width="802" height="50" uuid="b6d6dd11-ed94-41c8-88de-6d05c0eade42"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="18" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["ตารางเปรียบเทียบจำนวนนักศึกษาทั้งหมดกับจำนวนตามแผน ปีการศึกษา "+$F{academic_year}+" จำแนกตามคณะ ภาควิชา สาขาวิชา และระดับปริญญา"]]></textFieldExpression>
+				</textField>
 				<staticText>
-					<reportElement mode="Opaque" x="452" y="80" width="70" height="40" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="bb8f9c9f-47a8-4e61-9ed3-522cf84b0e76">
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
+					<reportElement mode="Opaque" x="212" y="77" width="50" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="79738f69-14d6-46a4-9d28-89d71a356cd4"/>
 					<box>
 						<pen lineWidth="1.0" lineStyle="Dotted"/>
 					</box>
@@ -288,57 +363,7 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<text><![CDATA[จริง]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="312" y="80" width="70" height="40" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="79738f69-14d6-46a4-9d28-89d71a356cd4">
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
-					<box>
-						<pen lineWidth="1.0" lineStyle="Dotted"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-					</textElement>
-					<text><![CDATA[จริง]]></text>
-				</staticText>
-				<staticText>
-					<reportElement mode="Opaque" x="522" y="80" width="70" height="40" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="5f82e8db-df50-4ef7-a5d8-66ad250b1e25">
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
-					<box>
-						<pen lineWidth="1.0" lineStyle="Dotted"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-					</textElement>
-					<text><![CDATA[แผน]]></text>
-				</staticText>
-				<staticText>
-					<reportElement mode="Opaque" x="732" y="80" width="70" height="40" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="a7d0b5eb-450f-4bf3-896f-8fd0db03a730">
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
-					<box>
-						<pen lineWidth="1.0" lineStyle="Dotted"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-					</textElement>
-					<text><![CDATA[จริง]]></text>
-				</staticText>
-				<staticText>
-					<reportElement mode="Opaque" x="242" y="80" width="70" height="40" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="6a5d5dd2-26ff-4ef5-9ed3-5f78e96790cc">
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
-					<box>
-						<pen lineWidth="1.0" lineStyle="Dotted"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-					</textElement>
-					<text><![CDATA[แผน]]></text>
-				</staticText>
-				<staticText>
-					<reportElement mode="Opaque" x="662" y="60" width="140" height="20" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="59735bcc-9f72-442a-8e6a-f802a9ac162e">
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
+					<reportElement mode="Opaque" x="642" y="57" width="160" height="20" forecolor="#FFFFFF" backcolor="#3B5998" uuid="59735bcc-9f72-442a-8e6a-f802a9ac162e"/>
 					<box>
 						<pen lineWidth="1.0" lineStyle="Dotted"/>
 					</box>
@@ -348,21 +373,7 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<text><![CDATA[รวมทั้งหมด]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="662" y="80" width="70" height="40" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="d0adc3a9-9c70-4c3d-bd92-8e9ec758cc79">
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
-					<box>
-						<pen lineWidth="1.0" lineStyle="Dotted"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-					</textElement>
-					<text><![CDATA[แผน]]></text>
-				</staticText>
-				<staticText>
-					<reportElement mode="Opaque" x="522" y="60" width="140" height="20" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="97c72f91-dcaf-4d9a-b3bb-e0db32e8ab9a">
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
+					<reportElement mode="Opaque" x="482" y="57" width="160" height="20" forecolor="#FFFFFF" backcolor="#3B5998" uuid="97c72f91-dcaf-4d9a-b3bb-e0db32e8ab9a"/>
 					<box>
 						<pen lineWidth="1.0" lineStyle="Dotted"/>
 					</box>
@@ -372,9 +383,17 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<text><![CDATA[ปริญญาเอก]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="592" y="80" width="70" height="40" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="e586a2a8-c147-40ee-aa7f-f10fabc2ceb5">
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
+					<reportElement mode="Opaque" x="0" y="57" width="162" height="60" forecolor="#FFFFFF" backcolor="#3B5998" uuid="f0a85fd5-90e9-44f0-ba1f-10ad9c04729e"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[คณะ / ภาควิชา / สาขาวิชา]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="532" y="77" width="50" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="e586a2a8-c147-40ee-aa7f-f10fabc2ceb5"/>
 					<box>
 						<pen lineWidth="1.0" lineStyle="Dotted"/>
 					</box>
@@ -384,21 +403,49 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<text><![CDATA[จริง]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="382" y="60" width="140" height="20" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="d4a0a15d-53a0-46e9-bb5b-3cce9a7699e1">
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
+					<reportElement mode="Opaque" x="582" y="77" width="60" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="2eb25687-6816-4738-9a76-ec705636b4c5"/>
 					<box>
 						<pen lineWidth="1.0" lineStyle="Dotted"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
 					</textElement>
-					<text><![CDATA[ปริญญาโท]]></text>
+					<text><![CDATA[%
+จริงเทียบแผน]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="382" y="80" width="70" height="40" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="3bc4fb0e-a144-49b7-889a-ef05ffce335f">
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
+					<reportElement mode="Opaque" x="692" y="77" width="50" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="a7d0b5eb-450f-4bf3-896f-8fd0db03a730"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[จริง]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="262" y="77" width="60" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="a103bb3b-a115-431e-8fe6-add194276295"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[%
+จริงเทียบแผน]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="372" y="77" width="50" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="bb8f9c9f-47a8-4e61-9ed3-522cf84b0e76"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[จริง]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="642" y="77" width="50" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="d0adc3a9-9c70-4c3d-bd92-8e9ec758cc79"/>
 					<box>
 						<pen lineWidth="1.0" lineStyle="Dotted"/>
 					</box>
@@ -408,9 +455,17 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<text><![CDATA[แผน]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="242" y="60" width="140" height="20" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="f46b01c8-8db8-4a49-a69f-eadd5554f6d3">
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
+					<reportElement mode="Opaque" x="322" y="77" width="50" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="3bc4fb0e-a144-49b7-889a-ef05ffce335f"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[แผน]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="162" y="57" width="160" height="20" forecolor="#FFFFFF" backcolor="#3B5998" uuid="f46b01c8-8db8-4a49-a69f-eadd5554f6d3"/>
 					<box>
 						<pen lineWidth="1.0" lineStyle="Dotted"/>
 					</box>
@@ -420,84 +475,64 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<text><![CDATA[ปริญญาตรี]]></text>
 				</staticText>
 				<staticText>
-					<reportElement mode="Opaque" x="0" y="60" width="242" height="60" isRemoveLineWhenBlank="true" forecolor="#FFFFFF" backcolor="#3B5998" uuid="f0a85fd5-90e9-44f0-ba1f-10ad9c04729e">
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
+					<reportElement mode="Opaque" x="322" y="57" width="160" height="20" forecolor="#FFFFFF" backcolor="#3B5998" uuid="d4a0a15d-53a0-46e9-bb5b-3cce9a7699e1"/>
 					<box>
 						<pen lineWidth="1.0" lineStyle="Dotted"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
 						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
 					</textElement>
-					<text><![CDATA[คณะ / ภาควิชา / สาขาวิชา]]></text>
+					<text><![CDATA[ปริญญาโท]]></text>
 				</staticText>
-				<textField>
-					<reportElement x="0" y="0" width="802" height="50" uuid="b6d6dd11-ed94-41c8-88de-6d05c0eade42"/>
+				<staticText>
+					<reportElement mode="Opaque" x="422" y="77" width="60" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="72ac6705-eeaf-4090-9be8-3b4f9eddb642"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="18" isBold="true"/>
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA["ตารางเปรียบเทียบจำนวนนักศึกษาทั้งหมดกับจำนวนตามแผน ปีการศึกษา "+$F{academic_year}+" จำแนกตามคณะ ภาควิชา สาขาวิชา และระดับปริญญา"]]></textFieldExpression>
-				</textField>
+					<text><![CDATA[%
+จริงเทียบแผน]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="742" y="77" width="60" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="c9c9e309-c2f3-46d9-81e0-7ed3bf4edda4"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[%
+จริงเทียบแผน]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="482" y="77" width="50" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="5f82e8db-df50-4ef7-a5d8-66ad250b1e25"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[แผน]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="162" y="77" width="50" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="6a5d5dd2-26ff-4ef5-9ed3-5f78e96790cc"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[แผน]]></text>
+				</staticText>
 			</band>
 		</groupHeader>
 		<groupFooter>
 			<band height="40">
-				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="312" y="20" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="f7830426-d976-4469-9c16-c68e0ed10db4">
-						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
-					<box leftPadding="3" rightPadding="3">
-						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{total_student_percent_Bachelor}]]></textFieldExpression>
-				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="242" y="0" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="1151b0f0-3936-4be9-b3fa-39c8746e5c42">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="212" y="0" width="50" height="20" backcolor="#D6D6C2" uuid="c0194625-ae81-47f7-bb99-487148beae4f">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
-					<box leftPadding="3" rightPadding="3">
-						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{total_student_plan_Bachelor}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="732" y="20" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="76148409-8c7c-44bf-92cb-95a772cdba8b">
-						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
-					<box leftPadding="3" rightPadding="3">
-						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[(($F{total_student_Bachelor}.doubleValue()+$F{total_student_Masters}.doubleValue()+$F{total_student_Doctoral}.doubleValue())*100)/($F{total_student_plan_Bachelor}.doubleValue()+$F{total_student_plan_Masters}.doubleValue()+$F{total_student_plan_Doctoral}.doubleValue())]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="592" y="0" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="11449e8a-6f42-4def-b90a-336416f8fced">
-						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
-					<box leftPadding="3" rightPadding="3">
-						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{total_student_Doctoral}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="312" y="0" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="c0194625-ae81-47f7-bb99-487148beae4f">
-						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -507,36 +542,9 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					</textElement>
 					<textFieldExpression><![CDATA[$F{total_student_Bachelor}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="662" y="20" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="6035e32b-ab13-4174-942b-9c6a976ba789">
-						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
-					<box leftPadding="3" rightPadding="3">
-						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA["100.00"]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="382" y="20" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="53b2797a-ea8a-4103-aaba-b8cfd867cec8">
-						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
-					<box leftPadding="3" rightPadding="3">
-						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA["100.00"]]></textFieldExpression>
-				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="452" y="20" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="de5beb86-f922-4cf6-8cd7-1bdbf0418fd3">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="582" y="0" width="60" height="40" backcolor="#D6D6C2" uuid="3e1e3a15-8d31-4725-8c54-90a3a4dd9b32">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -544,38 +552,11 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{total_student_percent_Masters}]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{total_student_percent_Doctoral}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="452" y="0" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="beddc27b-3cea-4992-bab4-85667d185c2d">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="482" y="0" width="50" height="20" backcolor="#D6D6C2" uuid="88e61794-57ea-471c-8622-4daee7d870fd">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
-					<box leftPadding="3" rightPadding="3">
-						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{total_student_Masters}]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="242" y="20" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="b53e5cfa-f473-4d28-a95d-9eeb70ae799e">
-						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
-					<box leftPadding="3" rightPadding="3">
-						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA["100.00"]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="522" y="0" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="88e61794-57ea-471c-8622-4daee7d870fd">
-						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -586,9 +567,8 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textFieldExpression><![CDATA[$F{total_student_plan_Doctoral}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="662" y="0" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="aaf34613-b389-4d94-9fc3-46c14c76af8e">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="162" y="0" width="50" height="20" backcolor="#D6D6C2" uuid="1151b0f0-3936-4be9-b3fa-39c8746e5c42">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -596,12 +576,71 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textElement textAlignment="Right" verticalAlignment="Middle">
 						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
 					</textElement>
-					<textFieldExpression><![CDATA[$F{total_student_plan_Bachelor}.doubleValue()+$F{total_student_plan_Masters}.doubleValue()+$F{total_student_plan_Doctoral}.doubleValue()]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{total_student_plan_Bachelor}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="382" y="0" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="b47f9a59-51f3-4c76-9978-b248cf89e635">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="372" y="0" width="50" height="20" backcolor="#D6D6C2" uuid="beddc27b-3cea-4992-bab4-85667d185c2d">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{total_student_Masters}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="642" y="0" width="50" height="20" backcolor="#D6D6C2" uuid="aaf34613-b389-4d94-9fc3-46c14c76af8e">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[($F{total_student_plan_Bachelor}.doubleValue()+$F{total_student_plan_Masters}.doubleValue()+$F{total_student_plan_Doctoral}.doubleValue())]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="372" y="20" width="50" height="20" backcolor="#D6D6C2" uuid="de5beb86-f922-4cf6-8cd7-1bdbf0418fd3">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{total_student_percent_Masters}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="262" y="0" width="60" height="40" backcolor="#D6D6C2" uuid="2fae758d-b043-43ee-9750-cc5ed1a964af">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{total_student_percent_Bachelor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="532" y="0" width="50" height="20" backcolor="#D6D6C2" uuid="11449e8a-6f42-4def-b90a-336416f8fced">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{total_student_Doctoral}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="322" y="0" width="50" height="20" backcolor="#D6D6C2" uuid="b47f9a59-51f3-4c76-9978-b248cf89e635">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
 					</reportElement>
 					<box leftPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -612,35 +651,8 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textFieldExpression><![CDATA[$F{total_student_plan_Masters}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="732" y="0" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="ecdcc1c8-5b8c-472d-910d-3ead75947619">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="642" y="20" width="50" height="20" backcolor="#D6D6C2" uuid="6035e32b-ab13-4174-942b-9c6a976ba789">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
-					<box leftPadding="3" rightPadding="3">
-						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
-					</box>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{total_student_Bachelor}.doubleValue()+$F{total_student_Masters}.doubleValue()+$F{total_student_Doctoral}.doubleValue()]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="242" height="40" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="94f83c16-8f2a-4bc7-a6ca-66564543251c">
-						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
-					</reportElement>
-					<box leftPadding="3">
-						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
-					</textElement>
-					<textFieldExpression><![CDATA["รวม"]]></textFieldExpression>
-				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="522" y="20" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="1c20c9d6-2586-4d76-91f0-3bb62425cb65">
-						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -651,9 +663,92 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textFieldExpression><![CDATA["100.00"]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="592" y="20" width="70" height="20" isRemoveLineWhenBlank="true" backcolor="#D6D6C2" uuid="7bb09bda-e072-4c0f-bf31-9f695be0fa6b">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="692" y="20" width="50" height="20" backcolor="#D6D6C2" uuid="76148409-8c7c-44bf-92cb-95a772cdba8b">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[(($F{total_student_Bachelor}.doubleValue()+$F{total_student_Masters}.doubleValue()+$F{total_student_Doctoral}.doubleValue())*100)/($F{total_student_plan_Bachelor}.doubleValue()+$F{total_student_plan_Masters}.doubleValue()+$F{total_student_plan_Doctoral}.doubleValue())]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="212" y="20" width="50" height="20" backcolor="#D6D6C2" uuid="f7830426-d976-4469-9c16-c68e0ed10db4">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{total_student_percent_Bachelor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="482" y="20" width="50" height="20" backcolor="#D6D6C2" uuid="1c20c9d6-2586-4d76-91f0-3bb62425cb65">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["100.00"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="742" y="0" width="60" height="40" backcolor="#D6D6C2" uuid="373a9119-f170-4c29-b9e3-fe5d6cd6dae0">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[(($F{total_student_Bachelor}.doubleValue()+$F{total_student_Masters}.doubleValue()+$F{total_student_Doctoral}.doubleValue())*100)/($F{total_student_plan_Bachelor}.doubleValue()+$F{total_student_plan_Masters}.doubleValue()+$F{total_student_plan_Doctoral}.doubleValue())]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="162" height="40" backcolor="#D6D6C2" uuid="94f83c16-8f2a-4bc7-a6ca-66564543251c">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["รวม"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="322" y="20" width="50" height="20" backcolor="#D6D6C2" uuid="53b2797a-ea8a-4103-aaba-b8cfd867cec8">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["100.00"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="162" y="20" width="50" height="20" backcolor="#D6D6C2" uuid="b53e5cfa-f473-4d28-a95d-9eeb70ae799e">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["100.00"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="532" y="20" width="50" height="20" backcolor="#D6D6C2" uuid="7bb09bda-e072-4c0f-bf31-9f695be0fa6b">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
 					</reportElement>
 					<box leftPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -663,31 +758,53 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					</textElement>
 					<textFieldExpression><![CDATA[$F{total_student_percent_Doctoral}]]></textFieldExpression>
 				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="422" y="0" width="60" height="40" backcolor="#D6D6C2" uuid="10fe4d3e-7503-4408-803b-a46fb8111177">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{total_student_percent_Masters}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="692" y="0" width="50" height="20" backcolor="#D6D6C2" uuid="ecdcc1c8-5b8c-472d-910d-3ead75947619">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[($F{total_student_Bachelor}.doubleValue()+$F{total_student_Masters}.doubleValue()+$F{total_student_Doctoral}.doubleValue())]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupFooter>
 	</group>
-	<group name="Faculty Group" minHeightToStartNewPage="30" keepTogether="true">
+	<group name="Faculty Group" keepTogether="true">
 		<groupExpression><![CDATA[$F{faculty_name}]]></groupExpression>
 		<groupHeader>
 			<band height="20">
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="242" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="44d3934f-4289-4080-a7aa-8110dda96d49">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="162" height="20" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="44d3934f-4289-4080-a7aa-8110dda96d49">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
 					</box>
 					<textElement>
 						<font fontName="TH SarabunPSK" size="13.5"/>
-						<paragraph firstLineIndent="3" leftIndent="0"/>
+						<paragraph lineSpacing="Proportional" firstLineIndent="3"/>
 					</textElement>
 					<textFieldExpression><![CDATA[($P{param_type}.equalsIgnoreCase("ce9f44bc3d348133b47226685a8f75bbf17e757b") ? "" : "  ")+$F{faculty_name}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="242" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="b096341a-7ce4-48d6-8071-78f4acb66c12">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="162" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="b096341a-7ce4-48d6-8071-78f4acb66c12">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -698,9 +815,8 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textFieldExpression><![CDATA[$F{fac_student_plan_Bachelor}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="312" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="ff3d60b3-8c81-4dd5-94f6-f9a34f915719">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="212" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="ff3d60b3-8c81-4dd5-94f6-f9a34f915719">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -710,10 +826,33 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					</textElement>
 					<textFieldExpression><![CDATA[$F{fac_student_Bachelor}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="382" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="1e9c6a07-145f-44ac-9b8c-b554532b9729">
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="262" y="0" width="60" height="20" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="7db8be61-7d49-466a-934b-5994ea486b29">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" bottomPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="13.5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fac_student_percent_Bachelor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="422" y="0" width="60" height="20" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="0fea86a5-9cbd-4f26-9e87-803d9c3c2aba">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" bottomPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="13.5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fac_student_percent_Masters}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="322" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="1e9c6a07-145f-44ac-9b8c-b554532b9729">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -724,9 +863,8 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textFieldExpression><![CDATA[$F{fac_student_plan_Masters}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="452" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="d9c00cba-6dea-4862-ac39-36eaa828ce8c">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="372" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="d9c00cba-6dea-4862-ac39-36eaa828ce8c">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -737,9 +875,8 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textFieldExpression><![CDATA[$F{fac_student_Masters}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="522" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="3749c2b5-fcf6-407c-a16d-eb84dbcbf0d5">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="482" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="3749c2b5-fcf6-407c-a16d-eb84dbcbf0d5">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -749,10 +886,21 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					</textElement>
 					<textFieldExpression><![CDATA[$F{fac_student_plan_Doctoral}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="592" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="6b4d518b-46d4-46c7-9beb-fca795bc5399">
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="582" y="0" width="60" height="20" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="0073d545-e627-4a40-b238-dadc9bdcdada">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" bottomPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="13.5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{fac_student_percent_Doctoral}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="532" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="6b4d518b-46d4-46c7-9beb-fca795bc5399">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -762,10 +910,21 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					</textElement>
 					<textFieldExpression><![CDATA[$F{fac_student_Doctoral}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="732" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="0e2ca073-765b-43b1-b2c1-d16b9d73d627">
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="742" y="0" width="60" height="20" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="cca8b554-a5b8-4759-98a4-bc3dc8860a2a">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" bottomPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="13.5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[(($F{fac_student_Bachelor}.doubleValue()+$F{fac_student_Masters}.doubleValue()+$F{fac_student_Doctoral}.doubleValue())*100)/($F{fac_student_plan_Bachelor}.doubleValue()+$F{fac_student_plan_Masters}.doubleValue()+$F{fac_student_plan_Doctoral}.doubleValue())]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="692" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="0e2ca073-765b-43b1-b2c1-d16b9d73d627">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -776,9 +935,8 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textFieldExpression><![CDATA[$F{fac_student_Bachelor}.doubleValue()+$F{fac_student_Masters}.doubleValue()+$F{fac_student_Doctoral}.doubleValue()]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="662" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="70d5432a-509d-4700-8e20-6f8989aaea57">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="642" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#B6CBE2" uuid="70d5432a-509d-4700-8e20-6f8989aaea57">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -791,14 +949,13 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 			</band>
 		</groupHeader>
 	</group>
-	<group name="Department Group" minHeightToStartNewPage="30" keepTogether="true">
+	<group name="Department Group" keepTogether="true">
 		<groupExpression><![CDATA[$F{department_name}]]></groupExpression>
 		<groupHeader>
 			<band height="20">
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="312" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="a676c4ac-52c3-44f3-b706-06d47c7ad7df">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="212" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="a676c4ac-52c3-44f3-b706-06d47c7ad7df">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -809,23 +966,21 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textFieldExpression><![CDATA[$F{dep_student_Bachelor}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="242" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="88b791ab-f5b2-492c-84ec-8ed49fa11ec4">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="162" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="88b791ab-f5b2-492c-84ec-8ed49fa11ec4">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
 					</box>
 					<textElement>
 						<font fontName="TH SarabunPSK" size="13.5"/>
-						<paragraph firstLineIndent="10" leftIndent="0"/>
+						<paragraph firstLineIndent="10"/>
 					</textElement>
 					<textFieldExpression><![CDATA[($P{param_type}.equalsIgnoreCase("ce9f44bc3d348133b47226685a8f75bbf17e757b") ? "" : "     ")+$F{department_name}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="242" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="ec0ea798-7e3f-4d55-8b7a-8b62780ec561">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="162" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="ec0ea798-7e3f-4d55-8b7a-8b62780ec561">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -835,10 +990,21 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					</textElement>
 					<textFieldExpression><![CDATA[$F{dep_student_plan_Bachelor}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="452" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="bec430cd-2702-4780-88fd-95901c7cd857">
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="262" y="0" width="60" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="6c1ddcf3-f0e6-4375-a0e0-7157b04fcb9f">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" bottomPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="13.5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{dep_student_percent_Bachelor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="372" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="bec430cd-2702-4780-88fd-95901c7cd857">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -848,10 +1014,21 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					</textElement>
 					<textFieldExpression><![CDATA[$F{dep_student_Masters}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="382" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="6603ccec-b961-4029-b0ba-e2052e5863ec">
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="422" y="0" width="60" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="a6026fb5-21cf-412d-9dcb-2d1abdb3e4ca">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" bottomPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="13.5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{dep_student_percent_Masters}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="322" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="6603ccec-b961-4029-b0ba-e2052e5863ec">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -861,10 +1038,21 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					</textElement>
 					<textFieldExpression><![CDATA[$F{dep_student_plan_Masters}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="522" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="353b9853-5d58-477b-8443-866c8b4bf0f9">
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="582" y="0" width="60" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="5a771526-57a4-4c40-a2ed-8e73db3548cf">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" bottomPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="13.5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{dep_student_percent_Doctoral}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="482" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="353b9853-5d58-477b-8443-866c8b4bf0f9">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -875,9 +1063,8 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textFieldExpression><![CDATA[$F{dep_student_plan_Doctoral}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="592" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="f7462994-0299-4c43-a0e0-cb156ba7ed81">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="532" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="f7462994-0299-4c43-a0e0-cb156ba7ed81">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -888,9 +1075,8 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textFieldExpression><![CDATA[$F{dep_student_Doctoral}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="732" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="c621b0f0-1fb2-4a9b-a02d-3809b405a852">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="692" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="c621b0f0-1fb2-4a9b-a02d-3809b405a852">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -901,9 +1087,8 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textFieldExpression><![CDATA[$F{dep_student_Bachelor}.doubleValue()+$F{dep_student_Masters}.doubleValue()+$F{dep_student_Doctoral}.doubleValue()]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="662" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="6e907fa7-eae5-45b3-8004-26ead58d2d48">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="642" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="6e907fa7-eae5-45b3-8004-26ead58d2d48">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -913,17 +1098,28 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					</textElement>
 					<textFieldExpression><![CDATA[$F{dep_student_plan_Bachelor}.doubleValue()+$F{dep_student_plan_Masters}.doubleValue()+$F{dep_student_plan_Doctoral}.doubleValue()]]></textFieldExpression>
 				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="742" y="0" width="60" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="4ee596be-8fd8-48db-81b7-fe47692cc153">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" bottomPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="13.5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[(($F{dep_student_Bachelor}.doubleValue()+$F{dep_student_Masters}.doubleValue()+$F{dep_student_Doctoral}.doubleValue())*100)/($F{dep_student_plan_Bachelor}.doubleValue()+$F{dep_student_plan_Masters}.doubleValue()+$F{dep_student_plan_Doctoral}.doubleValue())]]></textFieldExpression>
+				</textField>
 			</band>
 		</groupHeader>
 	</group>
-	<group name="Project Group" minHeightToStartNewPage="30" keepTogether="true">
+	<group name="Project Group" keepTogether="true">
 		<groupExpression><![CDATA[$F{project_name}]]></groupExpression>
 		<groupHeader>
 			<band height="20">
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="242" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="af32185a-aead-4f5a-947a-70dab07fd74d">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="162" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="af32185a-aead-4f5a-947a-70dab07fd74d">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -934,23 +1130,21 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textFieldExpression><![CDATA[$F{pro_student_plan_Bachelor}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="242" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="bcc7ce43-f553-4826-a2f8-11044a793fc2">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="162" height="20" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="bcc7ce43-f553-4826-a2f8-11044a793fc2">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
 					</box>
 					<textElement>
 						<font fontName="TH SarabunPSK" size="13.5"/>
-						<paragraph firstLineIndent="17" leftIndent="0"/>
+						<paragraph lineSpacing="1_1_2" lineSpacingSize="1.0" firstLineIndent="17" tabStopWidth="0"/>
 					</textElement>
 					<textFieldExpression><![CDATA[($P{param_type}.equalsIgnoreCase("ce9f44bc3d348133b47226685a8f75bbf17e757b") ? "" : "       ")+$F{project_name}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="312" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="9d82d059-428b-40d4-b50d-ff855108d7f9">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="212" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="9d82d059-428b-40d4-b50d-ff855108d7f9">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -960,10 +1154,21 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					</textElement>
 					<textFieldExpression><![CDATA[$F{pro_student_Bachelor}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="452" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="95d672dd-5533-4746-bfe0-d52971bd3791">
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="262" y="0" width="60" height="20" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="7779583f-3d03-4e26-9f23-d73b235f40e6">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" bottomPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="13.5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{pro_student_percent_Bachelor}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="372" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="95d672dd-5533-4746-bfe0-d52971bd3791">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -974,9 +1179,8 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textFieldExpression><![CDATA[$F{pro_student_Masters}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="382" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="b42cd58d-24e4-43b7-8ddc-76180a411a5b">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="322" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="b42cd58d-24e4-43b7-8ddc-76180a411a5b">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -986,10 +1190,21 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					</textElement>
 					<textFieldExpression><![CDATA[$F{pro_student_plan_Masters}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="592" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="6b26dbb2-a7fa-4ea0-ba84-0d04391472b5">
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="422" y="0" width="60" height="20" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="06b8e431-bd8d-4450-b230-759c6356deee">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" bottomPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="13.5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{pro_student_percent_Masters}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="532" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="6b26dbb2-a7fa-4ea0-ba84-0d04391472b5">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -999,10 +1214,21 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					</textElement>
 					<textFieldExpression><![CDATA[$F{pro_student_Doctoral}]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="522" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="b230c94e-66b6-49a2-99e9-a0905cad73e2">
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="582" y="0" width="60" height="20" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="3c468c82-6070-4afd-87e8-cc46012d2261">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" bottomPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="13.5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{pro_student_percent_Doctoral}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="482" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="b230c94e-66b6-49a2-99e9-a0905cad73e2">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -1013,9 +1239,8 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					<textFieldExpression><![CDATA[$F{pro_student_plan_Doctoral}]]></textFieldExpression>
 				</textField>
 				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="662" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="cd8a8e9a-dcb4-434a-9296-eb7d7e144202">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="642" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="cd8a8e9a-dcb4-434a-9296-eb7d7e144202">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
@@ -1025,10 +1250,21 @@ ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.depart
 					</textElement>
 					<textFieldExpression><![CDATA[$F{pro_student_plan_Bachelor}.doubleValue()+$F{pro_student_plan_Masters}.doubleValue()+$F{pro_student_plan_Doctoral}.doubleValue()]]></textFieldExpression>
 				</textField>
-				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
-					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="732" y="0" width="70" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="f3d69698-5a71-4515-800e-789b220175e9">
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="742" y="0" width="60" height="20" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="58866a3b-4098-42c3-8be4-21b935dcbd76">
 						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
-						<printWhenExpression><![CDATA[$P{param_education}.equalsIgnoreCase("b6589fc6ab0dc82cf12099d1c2d40ab994e8410c") ? true : false]]></printWhenExpression>
+					</reportElement>
+					<box leftPadding="3" bottomPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right">
+						<font fontName="TH SarabunPSK" size="13.5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[(($F{pro_student_Bachelor}.doubleValue()+$F{pro_student_Masters}.doubleValue()+$F{pro_student_Doctoral}.doubleValue())*100)/($F{pro_student_plan_Bachelor}.doubleValue()+$F{pro_student_plan_Masters}.doubleValue()+$F{pro_student_plan_Doctoral}.doubleValue())]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="692" y="0" width="50" height="20" isPrintWhenDetailOverflows="true" backcolor="#EDF2F8" uuid="f3d69698-5a71-4515-800e-789b220175e9">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
 					</reportElement>
 					<box leftPadding="3" bottomPadding="3" rightPadding="3">
 						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
