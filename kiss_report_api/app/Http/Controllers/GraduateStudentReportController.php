@@ -123,6 +123,11 @@ class GraduateStudentReportController extends Controller
 
       empty($request->param_year) ?: ($query .= " AND academic_year = ".$request->param_year." ");
       empty($request->param_faculty) ?: ($query .= " AND faculty_name = '".$request->param_faculty."' ");
+      empty($request->param_department) ?: ($query .= " AND department_name = '".$request->param_department."' ");
+
+      if ($request->param_education == 1) { $query .= " AND education_name LIKE '%ตรี%' "; }
+      else if ($request->param_education == 2) { $query .= " AND education_name LIKE '%โท%' "; }
+      else if ($request->param_education == 3) { $query .= " AND education_name LIKE '%เอก%' "; }
 
       $items = DB::select($query." ORDER BY academic_year DESC, faculty_name ASC
               , department_name ASC, project_name ASC, education_name ASC");
@@ -264,6 +269,11 @@ class GraduateStudentReportController extends Controller
 
       empty($request->param_year) ?: ($query .= " AND academic_year = ".$request->param_year." ");
       empty($request->param_faculty) ?: ($query .= " AND faculty_name = '".$request->param_faculty."' ");
+      empty($request->param_department) ?: ($query .= " AND department_name = '".$request->param_department."' ");
+
+      if ($request->param_education == 1) { $query .= " AND education_name LIKE '%ตรี%' "; }
+      else if ($request->param_education == 2) { $query .= " AND education_name LIKE '%โท%' "; }
+      else if ($request->param_education == 3) { $query .= " AND education_name LIKE '%เอก%' "; }
 
       $items = DB::select($query." ORDER BY academic_year DESC, faculty_name ASC
               , department_name ASC, project_name ASC, education_name ASC");
@@ -317,5 +327,41 @@ class GraduateStudentReportController extends Controller
               ORDER BY faculty_name ASC");
 
       return response()->json($Faculty);
+  }
+
+  public function DepartmentList(Request $request)
+  {
+      $query = "SELECT department_name
+        FROM graduate_student_report
+        WHERE 1 = 1 ";
+
+      empty($request->param_year) ?: ($query .= " AND academic_year = ".$request->param_year." ");
+      empty($request->param_faculty) ?: ($query .= " AND faculty_name = '".$request->param_faculty."' ");
+
+      $Department = DB::select($query." GROUP BY department_name
+            ORDER BY department_name ASC");
+
+      return response()->json($Department);
+  }
+
+  public function EducationList(Request $request)
+  {
+      $query = "SELECT (CASE WHEN education_name LIKE '%ตรี%' THEN 1 ELSE
+        	(CASE WHEN education_name LIKE '%โท%' THEN 2 ELSE
+        		(CASE WHEN education_name LIKE '%เอก%' THEN 3 ELSE 0 END)
+        	END)
+        END) as education_id
+        , education_name
+        FROM graduate_student_report
+        WHERE 1 = 1 ";
+
+      empty($request->param_year) ?: ($query .= " AND academic_year = ".$request->param_year." ");
+      empty($request->param_faculty) ?: ($query .= " AND faculty_name = '".$request->param_faculty."' ");
+      empty($request->param_department) ?: ($query .= " AND department_name = '".$request->param_department."' ");
+
+      $Education = DB::select($query." GROUP BY education_name
+            ORDER BY 1 ASC");
+
+      return response()->json($Education);
   }
 }

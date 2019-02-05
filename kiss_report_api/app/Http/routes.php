@@ -21,6 +21,8 @@ Route::post('Honor/Export', 'HonorBachelorReportController@ExportExcel');
 // New Student Report
 Route::get('NewStudent/YearList', 'NewStudentReportController@YearList');
 Route::get('NewStudent/FacultyList', 'NewStudentReportController@FacultyList');
+Route::get('NewStudent/DepartmentList', 'NewStudentReportController@DepartmentList');
+Route::get('NewStudent/EducationList', 'NewStudentReportController@EducationList');
 Route::post('NewStudent/Import', 'NewStudentReportController@ImportNewExcel');
 Route::post('NewStudent/Export', 'NewStudentReportController@ExportNewExcel');
 Route::post('NewStudent/Import/Percent', 'NewStudentReportController@ImportNewPercentExcel');
@@ -39,6 +41,8 @@ Route::post('AllStudent/Export/Percent', 'AllStudentReportController@ExportAllPe
 // Graduate Student Report
 Route::get('GraduateStudent/YearList', 'GraduateStudentReportController@YearList');
 Route::get('GraduateStudent/FacultyList', 'GraduateStudentReportController@FacultyList');
+Route::get('GraduateStudent/DepartmentList', 'GraduateStudentReportController@DepartmentList');
+Route::get('GraduateStudent/EducationList', 'GraduateStudentReportController@EducationList');
 Route::post('GraduateStudent/Import', 'GraduateStudentReportController@ImportGraduateExcel');
 Route::post('GraduateStudent/Export', 'GraduateStudentReportController@ExportGraduateExcel');
 Route::post('GraduateStudent/Import/Percent', 'GraduateStudentReportController@ImportGraduatePercentExcel');
