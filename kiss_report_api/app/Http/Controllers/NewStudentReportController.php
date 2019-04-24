@@ -365,4 +365,55 @@ class NewStudentReportController extends Controller
       return response()->json($Education);
   }
 
+  // jahja
+  public function CheckRoleUser(Request $request)
+  {
+      // set name report by page
+      if ($request->report == "new"){
+        $report = "New Student Report";
+      }else if ($request->report == "new_percent"){
+        $report = "New Student Report (%)";
+      }
+
+      // connect database lportal
+      $connect = DB::connection('mysql_lportal');
+
+      // search role by user login
+      $role_user = $connect->select("
+        SELECT GROUP_CONCAT(re.roleId) as role_id
+        FROM Role_ re
+        INNER JOIN Users_Roles uro ON re.roleId = uro.roleId
+        INNER JOIN User_ us ON uro.userId = us.userId
+        WHERE us.screenName = '".$request->user."' ");
+
+      // set disable button import, download(export)
+      $sql_close_button = "
+        SELECT 0 as is_import
+        , 0 as is_export";
+
+      if (!empty($role_user)) {
+        foreach ($role_user as $ru) {
+
+          if ($ru->role_id == null){
+            $close_button = DB::select($sql_close_button);
+            return response()->json(['status' => 400, 'error' => $request->user." don't have role.", 'data' => $close_button]);
+          }
+
+          // search is_import, is_export by role, report
+          $user_botton = DB::select("
+            SELECT COALESCE(SUM(is_import),0) as is_import
+            , COALESCE(SUM(is_export),0) as is_export
+            FROM report_role_mapping
+            WHERE FIND_IN_SET(role_id,'".$ru->role_id."')
+            AND portlet_name = '".$report."' ");
+
+        }
+
+        return response()->json(['status' => 200, 'data' => $user_botton]);
+      }else {
+        $close_button = DB::select($sql_close_button);
+        return response()->json(['status' => 400, 'error' => "Don't have user '".$request->user."'", 'data' => $close_button]);
+      }
+  }
+
 }

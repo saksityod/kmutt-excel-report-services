@@ -64,6 +64,18 @@ return [
             'strict'    => false,
         ],
 
+        'mysql_lportal' => [
+            'driver'    => 'mysql',
+            'host'      => env('DB_HOST_LPORTAL', '10.1.130.242'),
+            'database'  => env('DB_DATABASE_LPORTAL', 'lportal_pro_v3'),
+            'username'  => env('DB_USERNAME_LPORTAL', 'root'),
+            'password'  => env('DB_PASSWORD_LPORTAL', '015482543'),
+            'charset'   => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix'    => '',
+            'strict'    => false,
+        ],
+
         'pgsql' => [
             'driver'   => 'pgsql',
             'host'     => env('DB_HOST', 'localhost'),
