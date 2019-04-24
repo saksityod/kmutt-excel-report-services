@@ -23,7 +23,7 @@ Route::delete('report_role_mapping/{report_role_mapping_id}', 'ReportOperationPe
 // Honor Bachelor Report
 Route::get('Honor/YearList', 'HonorBachelorReportController@YearList');
 Route::get('Honor/FacultyList', 'HonorBachelorReportController@FacultyList');
-Route::get('Honor/CheckRoleUser', 'HonorBachelorReportController@CheckRoleUser'); // jahja
+Route::get('Honor/CheckRoleUser', 'HonorBachelorReportController@CheckRoleUser');
 Route::post('Honor/Import/HonorBachelor', 'HonorBachelorReportController@ImportExcel');
 Route::post('Honor/Export', 'HonorBachelorReportController@ExportExcel');
 
@@ -32,7 +32,7 @@ Route::get('NewStudent/YearList', 'NewStudentReportController@YearList');
 Route::get('NewStudent/FacultyList', 'NewStudentReportController@FacultyList');
 Route::get('NewStudent/DepartmentList', 'NewStudentReportController@DepartmentList');
 Route::get('NewStudent/EducationList', 'NewStudentReportController@EducationList');
-Route::get('NewStudent/CheckRoleUser', 'NewStudentReportController@CheckRoleUser'); // jahja
+Route::get('NewStudent/CheckRoleUser', 'NewStudentReportController@CheckRoleUser');
 Route::post('NewStudent/Import', 'NewStudentReportController@ImportNewExcel');
 Route::post('NewStudent/Export', 'NewStudentReportController@ExportNewExcel');
 Route::post('NewStudent/Import/Percent', 'NewStudentReportController@ImportNewPercentExcel');
@@ -43,7 +43,7 @@ Route::get('AllStudent/YearList', 'AllStudentReportController@YearList');
 Route::get('AllStudent/FacultyList', 'AllStudentReportController@FacultyList');
 Route::get('AllStudent/DepartmentList', 'AllStudentReportController@DepartmentList');
 Route::get('AllStudent/EducationList', 'AllStudentReportController@EducationList');
-Route::get('AllStudent/CheckRoleUser', 'AllStudentReportController@CheckRoleUser'); // jahja
+Route::get('AllStudent/CheckRoleUser', 'AllStudentReportController@CheckRoleUser');
 Route::post('AllStudent/Import', 'AllStudentReportController@ImportAllExcel');
 Route::post('AllStudent/Export', 'AllStudentReportController@ExportAllExcel');
 Route::post('AllStudent/Import/Percent', 'AllStudentReportController@ImportAllPercentExcel');
@@ -54,7 +54,7 @@ Route::get('GraduateStudent/YearList', 'GraduateStudentReportController@YearList
 Route::get('GraduateStudent/FacultyList', 'GraduateStudentReportController@FacultyList');
 Route::get('GraduateStudent/DepartmentList', 'GraduateStudentReportController@DepartmentList');
 Route::get('GraduateStudent/EducationList', 'GraduateStudentReportController@EducationList');
-Route::get('GraduateStudent/CheckRoleUser', 'GraduateStudentReportController@CheckRoleUser'); // jahja
+Route::get('GraduateStudent/CheckRoleUser', 'GraduateStudentReportController@CheckRoleUser');
 Route::post('GraduateStudent/Import', 'GraduateStudentReportController@ImportGraduateExcel');
 Route::post('GraduateStudent/Export', 'GraduateStudentReportController@ExportGraduateExcel');
 Route::post('GraduateStudent/Import/Percent', 'GraduateStudentReportController@ImportGraduatePercentExcel');
