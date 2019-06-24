@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="ftes_report" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Error" uuid="ea7fe8fe-762b-45e4-9e69-1b6cd6f570ac">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kiss_excel_report"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="338"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="655"/>
+	<parameter name="param_year" class="java.lang.String"/>
+	<parameter name="param_faculty_name" class="java.lang.String"/>
+	<parameter name="param_semester" class="java.lang.String"/>
+	<parameter name="param_type" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT faculty.academic_year
+, faculty.semester
+, CONCAT(faculty.semester,"/",faculty.academic_year) as semester_year
+, faculty.faculty_name
+, faculty.no_of_teacher as fac_no_of_teacher
+, ROUND(faculty.no_of_student, 2) as fac_no_of_student
+,	faculty.ftes as fac_ftes
+
+, total.no_of_teacher as tol_no_of_teacher
+, ROUND(total.no_of_student, 2) as tol_no_of_student
+,	(CASE WHEN total.no_of_student = 0 THEN 0 ELSE ROUND((total.no_of_student/total.no_of_teacher),2) END ) as tol_ftes
+FROM (
+	SELECT academic_year
+	, semester
+	, faculty_name
+	, SUM(no_of_teacher) as no_of_teacher
+	, SUM(no_of_student) as no_of_student
+	, ftes
+	FROM ftes
+	WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
+	AND ( SHA1(semester) = ($P{param_semester}) OR ($P{param_semester}) = SHA1('') )
+	AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
+	GROUP BY academic_year
+	, semester
+	, faculty_name
+) faculty
+LEFT JOIN (
+	SELECT academic_year
+	, semester
+	, SUM(no_of_teacher) as no_of_teacher
+	, SUM(no_of_student) as no_of_student
+	FROM ftes
+	WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
+	AND ( SHA1(semester) = ($P{param_semester}) OR ($P{param_semester}) = SHA1('') )
+	AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
+	GROUP BY academic_year
+	, semester
+) total ON faculty.academic_year = total.academic_year
+AND faculty.semester = total.semester
+ORDER BY faculty.academic_year DESC, faculty.semester ASC, faculty.faculty_name ASC]]>
+	</queryString>
+	<field name="academic_year" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="academic_year"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ftes"/>
+	</field>
+	<field name="semester" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="semester"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ftes"/>
+	</field>
+	<field name="semester_year" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="semester_year"/>
+	</field>
+	<field name="faculty_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="faculty_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ftes"/>
+	</field>
+	<field name="fac_no_of_teacher" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_no_of_teacher"/>
+	</field>
+	<field name="fac_no_of_student" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="fac_no_of_student"/>
+	</field>
+	<field name="fac_ftes" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="fac_ftes"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="ftes"/>
+	</field>
+	<field name="tol_no_of_teacher" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="tol_no_of_teacher"/>
+	</field>
+	<field name="tol_no_of_student" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="tol_no_of_student"/>
+	</field>
+	<field name="tol_ftes" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="tol_ftes"/>
+	</field>
+	<group name="Semester Year Group" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{semester_year}]]></groupExpression>
+		<groupHeader>
+			<band height="115">
+				<staticText>
+					<reportElement mode="Opaque" x="652" y="65" width="150" height="50" forecolor="#FFFFFF" backcolor="#3B5998" uuid="97c72f91-dcaf-4d9a-b3bb-e0db32e8ab9a"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[อาจารย์ : นักศึกษาเต็มเวลา (FTES)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="352" y="65" width="150" height="50" forecolor="#FFFFFF" backcolor="#3B5998" uuid="f46b01c8-8db8-4a49-a69f-eadd5554f6d3"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[จำนวนอาจารย์ (คน)]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="65" width="352" height="50" forecolor="#FFFFFF" backcolor="#3B5998" uuid="f0a85fd5-90e9-44f0-ba1f-10ad9c04729e"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[คณะ]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="25" width="802" height="25" uuid="c2da976e-8168-4648-a438-853098de6f94"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="18" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["ภาคการศึกษา "+$F{semester_year}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="802" height="25" uuid="21bbb652-c82f-44b2-86e7-f8bbbfbc51e8"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="18" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ตารางจำนวนอาจารย์ : นักศึกษาเต็มเวลา (FTES) จำแนกตามคณะ]]></text>
+				</staticText>
+				<textField>
+					<reportElement mode="Opaque" x="502" y="65" width="150" height="50" forecolor="#FFFFFF" backcolor="#3B5998" uuid="f4d8f518-4b84-44e8-a499-841531ad9399"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["นักศึกษาเต็มเวลา (FTES)"]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="20">
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="352" height="20" backcolor="#D6D6C2" uuid="94f83c16-8f2a-4bc7-a6ca-66564543251c">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["รวม"]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="502" y="0" width="150" height="20" backcolor="#D6D6C2" uuid="4a9df4bd-f5a9-4dbf-bc6d-e7e59b932693">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[( $F{tol_no_of_student}.doubleValue() == 0.00) ? 0.00 : $F{tol_no_of_student}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="652" y="0" width="150" height="20" backcolor="#D6D6C2" uuid="6073da8f-92fb-4858-961d-c467e02c76c1">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[( $F{tol_ftes}.doubleValue() == 0.00) ? "" : "1 : "+$F{tol_ftes}]]></textFieldExpression>
+				</textField>
+				<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+					<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="352" y="0" width="150" height="20" backcolor="#D6D6C2" uuid="fd71fe40-405d-4b36-96e1-1ac342765d39">
+						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+					</reportElement>
+					<box leftPadding="3" rightPadding="3">
+						<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+					</box>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[( $F{tol_no_of_teacher}.doubleValue() == 0.00) ? "" : $F{tol_no_of_teacher}]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20">
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="352" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="44d3934f-4289-4080-a7aa-8110dda96d49">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+				</reportElement>
+				<box leftPadding="3" bottomPadding="3" rightPadding="3">
+					<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+				</box>
+				<textElement>
+					<font fontName="TH SarabunPSK" size="13.5"/>
+					<paragraph firstLineIndent="3" leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{param_type}.equalsIgnoreCase("ce9f44bc3d348133b47226685a8f75bbf17e757b") ? "" : "  ")+$F{faculty_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="352" y="0" width="150" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="b096341a-7ce4-48d6-8071-78f4acb66c12">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+				</reportElement>
+				<box leftPadding="3" bottomPadding="3" rightPadding="3">
+					<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="13.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{fac_no_of_teacher}.doubleValue() == 0.00) ? "" : $F{fac_no_of_teacher}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="502" y="0" width="150" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="1d749467-92f8-4dcc-a820-acc9295d55ff">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+				</reportElement>
+				<box leftPadding="3" bottomPadding="3" rightPadding="3">
+					<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="13.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{fac_no_of_student}.doubleValue() == 0.00) ? 0 : $F{fac_no_of_student}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="652" y="0" width="150" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="a5b89ca6-da62-4497-97be-dcb2bd01fb0a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+				</reportElement>
+				<box leftPadding="3" bottomPadding="3" rightPadding="3">
+					<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="13.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{fac_no_of_student}.doubleValue() == 0.00) ? "" : $F{fac_ftes}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="30">
+			<textField>
+				<reportElement x="0" y="0" width="802" height="30" uuid="79ec047d-487d-42e2-9091-8ffead4269c1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["- "+$V{PAGE_NUMBER}+" -"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>

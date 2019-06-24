@@ -20,7 +20,7 @@
 	<queryString>
 		<![CDATA[SELECT faculty.faculty_name
 , department.department_name
-, project.project_name
+, project.field_name as project_name
 , faculty.academic_year
 
 , faculty.student_plan_Bachelor as fac_student_plan_Bachelor
@@ -116,7 +116,7 @@ LEFT JOIN
 (
 		SELECT pro.faculty_name
 			, pro.department_name
-			, pro.project_name
+			, pro.field_name
 			, pro.academic_year
 			, MAX(pro.student_plan_Bachelor) as student_plan_Bachelor
 			, MAX(pro.student_Bachelor) as student_Bachelor
@@ -127,7 +127,7 @@ LEFT JOIN
 			FROM (
 					SELECT faculty_name
 					, department_name
-					, project_name
+					, field_name
 					, education_name
 					, academic_year
 					, (CASE WHEN education_name = "ปริญญาตรี" THEN SUM(no_of_all_student_plan) ELSE 0 END) as student_plan_Bachelor
@@ -140,9 +140,9 @@ LEFT JOIN
 					WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
 					AND ( SHA1(faculty_name) = ($P{param_faculty_name}) OR ($P{param_faculty_name}) = SHA1('')  )
 					AND ( SHA1(department_name) = ($P{param_department_name}) OR ($P{param_department_name}) = SHA1('') )
-					GROUP BY faculty_name, department_name, project_name, education_name, academic_year
+					GROUP BY faculty_name, department_name, field_name, education_name, academic_year
 			) pro
-		GROUP BY pro.faculty_name, pro.department_name, pro.project_name, pro.academic_year
+		GROUP BY pro.faculty_name, pro.department_name, pro.field_name, pro.academic_year
 ) project ON project.faculty_name = faculty.faculty_name
 AND project.department_name = department.department_name
 AND project.academic_year = faculty.academic_year
@@ -180,7 +180,7 @@ LEFT JOIN
 		) result
 		GROUP BY result.academic_year
 ) total ON faculty.academic_year = total.academic_year
-ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.department_name ASC, project.project_name ASC]]>
+ORDER BY faculty.academic_year DESC, faculty.faculty_name ASC, department.department_name ASC, project.field_name ASC]]>
 	</queryString>
 	<field name="faculty_name" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="faculty_name"/>

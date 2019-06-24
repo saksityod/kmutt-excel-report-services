@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.5.1.final using JasperReports Library version 6.5.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="admission_score_report" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Error" uuid="ea7fe8fe-762b-45e4-9e69-1b6cd6f570ac">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="kiss_excel_report"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w1" value="338"/>
+	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="655"/>
+	<parameter name="param_year" class="java.lang.String"/>
+	<parameter name="param_faculty_field_name" class="java.lang.String"/>
+	<parameter name="param_type" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT academic_year
+, field_code
+, faculty_field_name
+, COALESCE(SUM(no_of_candidate),0) as no_of_candidate
+, COALESCE(SUM(no_of_admission), 0) as no_of_admission
+, COALESCE(SUM(no_of_qualified), 0) as no_of_qualified
+, COALESCE(SUM(max_score), 0.00) as max_score
+, COALESCE(SUM(min_score), 0.00) as min_score
+, COALESCE(SUM(average_score), 0.00) as average_score
+, COALESCE(SUM(sd_score), 0.00) as sd_score
+FROM admission_score
+WHERE ( SHA1(academic_year) = ($P{param_year}) OR ($P{param_year}) = SHA1('') )
+AND ( SHA1(faculty_field_name) = ($P{param_faculty_field_name}) OR ($P{param_faculty_field_name}) = SHA1('')  )
+GROUP BY academic_year
+, field_code
+, faculty_field_name
+ORDER BY academic_year DESC, field_code ASC]]>
+	</queryString>
+	<field name="academic_year" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.label" value="academic_year"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="admission_score"/>
+	</field>
+	<field name="field_code" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="field_code"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="admission_score"/>
+	</field>
+	<field name="faculty_field_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="faculty_field_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="admission_score"/>
+	</field>
+	<field name="no_of_candidate" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="no_of_candidate"/>
+	</field>
+	<field name="no_of_admission" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="no_of_admission"/>
+	</field>
+	<field name="no_of_qualified" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="no_of_qualified"/>
+	</field>
+	<field name="max_score" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="max_score"/>
+	</field>
+	<field name="min_score" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="min_score"/>
+	</field>
+	<field name="average_score" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="average_score"/>
+	</field>
+	<field name="sd_score" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="sd_score"/>
+	</field>
+	<group name="Year Group" isStartNewPage="true" isReprintHeaderOnEachPage="true">
+		<groupExpression><![CDATA[$F{academic_year}]]></groupExpression>
+		<groupHeader>
+			<band height="105">
+				<staticText>
+					<reportElement mode="Opaque" x="412" y="65" width="65" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="59735bcc-9f72-442a-8e6a-f802a9ac162e"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[จำนวนรับ]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="347" y="65" width="65" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="97c72f91-dcaf-4d9a-b3bb-e0db32e8ab9a"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[จำนวนสมัคร]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="65" y="65" width="65" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="d4a0a15d-53a0-46e9-bb5b-3cce9a7699e1"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[รหัส]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="0" y="65" width="65" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="f46b01c8-8db8-4a49-a69f-eadd5554f6d3"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[ปีการศึกษา]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="130" y="65" width="217" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="f0a85fd5-90e9-44f0-ba1f-10ad9c04729e"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[คณะ /  สาขา]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="0" y="25" width="802" height="25" uuid="c2da976e-8168-4648-a438-853098de6f94"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="18" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["ปีการศึกษา "+$F{academic_year}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="0" width="802" height="25" uuid="21bbb652-c82f-44b2-86e7-f8bbbfbc51e8"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="18" isBold="true"/>
+					</textElement>
+					<text><![CDATA[คะแนนสูงสุด-ต่ำสุด โครงการ Admission ของแต่ละสาขา]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="477" y="65" width="65" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="07411d68-4369-4a3c-9971-750382527cd0"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[จำนวนผ่าน]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="542" y="65" width="65" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="4f270fa6-778a-44e9-b583-559d0675d451"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[คะแนนสูงสุด]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="607" y="65" width="65" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="77780716-b682-4794-b83f-95c67c235aad"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[คะแนนต่ำสุด]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="672" y="65" width="65" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="771538f6-8559-4e72-a3d0-55eef216f4de"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[คำแนนเฉลี่ย]]></text>
+				</staticText>
+				<staticText>
+					<reportElement mode="Opaque" x="737" y="65" width="65" height="40" forecolor="#FFFFFF" backcolor="#3B5998" uuid="0794aa58-8972-4478-a1e6-5c10ad17b22e"/>
+					<box>
+						<pen lineWidth="1.0" lineStyle="Dotted"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="TH SarabunPSK" size="14" isBold="true"/>
+					</textElement>
+					<text><![CDATA[SD]]></text>
+				</staticText>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="20">
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="412" y="0" width="65" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="dc41fddb-27e6-4479-ab43-f7adf001cbc2">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+				</reportElement>
+				<box leftPadding="3" bottomPadding="3" rightPadding="3">
+					<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="13.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{no_of_admission}.doubleValue() == 0.00) ? 0 : $F{no_of_admission}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="130" y="0" width="217" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="44d3934f-4289-4080-a7aa-8110dda96d49">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+				</reportElement>
+				<box leftPadding="3" bottomPadding="3" rightPadding="3">
+					<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+				</box>
+				<textElement>
+					<font fontName="TH SarabunPSK" size="13.5"/>
+					<paragraph firstLineIndent="3" leftIndent="0"/>
+				</textElement>
+				<textFieldExpression><![CDATA[($P{param_type}.equalsIgnoreCase("ce9f44bc3d348133b47226685a8f75bbf17e757b") ? "" : "  ")+$F{faculty_field_name}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="477" y="0" width="65" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="41c30c97-e4b1-460d-9b1d-249286aae0b0">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+				</reportElement>
+				<box leftPadding="3" bottomPadding="3" rightPadding="3">
+					<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="13.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{no_of_qualified}.doubleValue() == 0.00) ? 0 : $F{no_of_qualified}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="0" y="0" width="65" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="b096341a-7ce4-48d6-8071-78f4acb66c12">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+				</reportElement>
+				<box leftPadding="3" bottomPadding="3" rightPadding="3">
+					<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="TH SarabunPSK" size="13.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{academic_year}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="607" y="0" width="65" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="d5dd4014-093c-457e-9146-51adc803d377">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+				</reportElement>
+				<box leftPadding="3" bottomPadding="3" rightPadding="3">
+					<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="13.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{min_score}.doubleValue() == 0.00) ? 0 : $F{min_score}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="542" y="0" width="65" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="e9c3737e-e654-4042-90d3-aa9f7b62fd7d">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+				</reportElement>
+				<box leftPadding="3" bottomPadding="3" rightPadding="3">
+					<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="13.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{max_score}.doubleValue() == 0.00) ? 0 : $F{max_score}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="672" y="0" width="65" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="a2c55213-bfb6-4d72-bc99-96bd50929395">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+				</reportElement>
+				<box leftPadding="3" bottomPadding="3" rightPadding="3">
+					<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="13.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{average_score}.doubleValue() == 0.00) ? 0 : $F{average_score}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="347" y="0" width="65" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="b6853867-82c6-4e84-b056-4f04c4e97262">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+				</reportElement>
+				<box leftPadding="3" bottomPadding="3" rightPadding="3">
+					<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="13.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{no_of_candidate}.doubleValue() == 0.00) ? 0 : $F{no_of_candidate}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" pattern="#,##0.00" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="737" y="0" width="65" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="0ba52233-fb85-41a0-8559-d40b91777dee">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+				</reportElement>
+				<box leftPadding="3" bottomPadding="3" rightPadding="3">
+					<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Right">
+					<font fontName="TH SarabunPSK" size="13.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[( $F{sd_score}.doubleValue() == 0.00) ? 0 : $F{sd_score}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement stretchType="RelativeToBandHeight" mode="Opaque" x="65" y="0" width="65" height="20" isPrintWhenDetailOverflows="true" backcolor="#DCE6F1" uuid="edacda98-4f0f-4bb8-9afd-2b2801155ddf">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="6e654445-7d62-482a-8c5f-94b41360ae0c"/>
+				</reportElement>
+				<box leftPadding="3" bottomPadding="3" rightPadding="3">
+					<pen lineWidth="1.0" lineStyle="Dotted" lineColor="#FFFFFF"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font fontName="TH SarabunPSK" size="13.5"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{field_code}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="30">
+			<textField>
+				<reportElement x="0" y="0" width="802" height="30" uuid="79ec047d-487d-42e2-9091-8ffead4269c1"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="TH SarabunPSK" size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA["- "+$V{PAGE_NUMBER}+" -"]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+</jasperReport>
