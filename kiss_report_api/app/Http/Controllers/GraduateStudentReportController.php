@@ -30,7 +30,7 @@ class GraduateStudentReportController extends Controller
       $column1 = "ปีการศึกษา";
       $column2 = "คณะ";
       $column3 = "ภาค";
-      $column4 = "โครงการหลักสูตร/ชั้นปี";
+      $column4 = "สาขา";
       $column5 = "ระดับการศึกษา";
       $column6 = "แผน";
       $column7 = "จริง";
@@ -63,7 +63,7 @@ class GraduateStudentReportController extends Controller
               $honor = GraduateStudentReport::where('academic_year',$i->$column1)
                     ->where('faculty_name',$i->$column2)
                     ->where('department_name',$i->$column3)
-                    ->where('project_name',$i->$column4)
+                    ->where('field_name',$i->$column4)
                     ->where('education_name',$i->$column5)
                     ->first();
 
@@ -73,7 +73,7 @@ class GraduateStudentReportController extends Controller
                 $honor->academic_year = $i->$column1;
                 $honor->faculty_name = $i->$column2;
                 $honor->department_name = $i->$column3;
-                $honor->project_name = $i->$column4;
+                $honor->field_name = $i->$column4;
                 $honor->education_name = $i->$column5;
                 $honor->no_of_graduate_student_plan = $i->$column6;
                 $honor->no_of_graduate_student = $i->$column7;
@@ -96,7 +96,7 @@ class GraduateStudentReportController extends Controller
                     WHERE academic_year = ".$i->$column1."
                     AND faculty_name = '".$i->$column2."'
                     AND department_name = '".$i->$column3."'
-                    AND project_name = '".$i->$column4."'
+                    AND field_name = '".$i->$column4."'
                     AND education_name = '".$i->$column5."' ");
                 } catch (Exception $e) {
                   $errors[] = ['errors' => substr($e,0,254)];
@@ -130,7 +130,7 @@ class GraduateStudentReportController extends Controller
       else if ($request->param_education == 3) { $query .= " AND education_name LIKE '%เอก%' "; }
 
       $items = DB::select($query." ORDER BY academic_year DESC, faculty_name ASC
-              , department_name ASC, project_name ASC, education_name ASC");
+              , department_name ASC, field_name ASC, education_name ASC");
 
       // ระบุชื่อไฟล์
       $filename = "import_graduate_template";
@@ -138,7 +138,7 @@ class GraduateStudentReportController extends Controller
       $excel->sheet($filename, function($sheet) use($items) {
 
       // ระบุ record แรกของไฟล์
-      $sheet->appendRow(array("ปีการศึกษา", "คณะ", "ภาค", "โครงการหลักสูตร/ชั้นปี", "ระดับการศึกษา", "แผน", "จริง"));
+      $sheet->appendRow(array("ปีการศึกษา", "คณะ", "ภาค", "สาขา", "ระดับการศึกษา", "แผน", "จริง"));
 
       // ข้อมูลที่ใส่ในไฟล์
       foreach ($items as $i) {
@@ -146,7 +146,7 @@ class GraduateStudentReportController extends Controller
             $i->academic_year,
             $i->faculty_name,
             $i->department_name,
-            $i->project_name,
+            $i->field_name,
             $i->education_name,
             $i->no_of_graduate_student_plan,
             $i->no_of_graduate_student,
@@ -172,7 +172,7 @@ class GraduateStudentReportController extends Controller
       $column1 = "ปีการศึกษา";
       $column2 = "คณะ";
       $column3 = "ภาค";
-      $column4 = "โครงการหลักสูตร/ชั้นปี";
+      $column4 = "สาขา";
       $column5 = "ระดับการศึกษา";
       $column6 = "แผน";
       $column7 = "จริง";
@@ -207,7 +207,7 @@ class GraduateStudentReportController extends Controller
               $honor = GraduateStudentReport::where('academic_year',$i->$column1)
                     ->where('faculty_name',$i->$column2)
                     ->where('department_name',$i->$column3)
-                    ->where('project_name',$i->$column4)
+                    ->where('field_name',$i->$column4)
                     ->where('education_name',$i->$column5)
                     ->first();
 
@@ -217,7 +217,7 @@ class GraduateStudentReportController extends Controller
                 $honor->academic_year = $i->$column1;
                 $honor->faculty_name = $i->$column2;
                 $honor->department_name = $i->$column3;
-                $honor->project_name = $i->$column4;
+                $honor->field_name = $i->$column4;
                 $honor->education_name = $i->$column5;
                 $honor->no_of_graduate_student_plan = $i->$column6;
                 $honor->no_of_graduate_student = $i->$column7;
@@ -242,7 +242,7 @@ class GraduateStudentReportController extends Controller
                     WHERE academic_year = ".$i->$column1."
                     AND faculty_name = '".$i->$column2."'
                     AND department_name = '".$i->$column3."'
-                    AND project_name = '".$i->$column4."'
+                    AND field_name = '".$i->$column4."'
                     AND education_name = '".$i->$column5."' ");
                 } catch (Exception $e) {
                   $errors[] = ['errors' => substr($e,0,254)];
@@ -276,7 +276,7 @@ class GraduateStudentReportController extends Controller
       else if ($request->param_education == 3) { $query .= " AND education_name LIKE '%เอก%' "; }
 
       $items = DB::select($query." ORDER BY academic_year DESC, faculty_name ASC
-              , department_name ASC, project_name ASC, education_name ASC");
+              , department_name ASC, field_name ASC, education_name ASC");
 
       // ระบุชื่อไฟล์
       $filename = "import_graduate(%)_template";
@@ -284,7 +284,7 @@ class GraduateStudentReportController extends Controller
       $excel->sheet($filename, function($sheet) use($items) {
 
       // ระบุ record แรกของไฟล์
-      $sheet->appendRow(array("ปีการศึกษา", "คณะ", "ภาค", "โครงการหลักสูตร/ชั้นปี", "ระดับการศึกษา", "แผน", "จริง", "ร้อยละ(จริงเปรียบเทียบ)"));
+      $sheet->appendRow(array("ปีการศึกษา", "คณะ", "ภาค", "สาขา", "ระดับการศึกษา", "แผน", "จริง", "ร้อยละ(จริงเปรียบเทียบ)"));
 
       // ข้อมูลที่ใส่ในไฟล์
       foreach ($items as $i) {
@@ -292,7 +292,7 @@ class GraduateStudentReportController extends Controller
             $i->academic_year,
             $i->faculty_name,
             $i->department_name,
-            $i->project_name,
+            $i->field_name,
             $i->education_name,
             $i->no_of_graduate_student_plan,
             $i->no_of_graduate_student,
@@ -315,6 +315,25 @@ class GraduateStudentReportController extends Controller
       return response()->json($Year);
   }
 
+  public function EducationList(Request $request)
+  {
+      $query = "SELECT (CASE WHEN education_name LIKE '%ตรี%' THEN 1 ELSE
+          (CASE WHEN education_name LIKE '%โท%' THEN 2 ELSE
+            (CASE WHEN education_name LIKE '%เอก%' THEN 3 ELSE 0 END)
+          END)
+        END) as education_id
+        , education_name
+        FROM graduate_student_report
+        WHERE 1 = 1 ";
+
+      empty($request->param_year) ?: ($query .= " AND academic_year = ".$request->param_year." ");
+
+      $Education = DB::select($query." GROUP BY education_name
+            ORDER BY 1 ASC");
+
+      return response()->json($Education);
+  }
+
   public function FacultyList(Request $request)
   {
       $query = "SELECT faculty_name
@@ -322,6 +341,10 @@ class GraduateStudentReportController extends Controller
         WHERE 1 = 1 ";
 
       empty($request->param_year) ?: ($query .= " AND academic_year = ".$request->param_year." ");
+
+      if ($request->param_education == 1) { $query .= " AND education_name LIKE '%ตรี%' "; }
+      else if ($request->param_education == 2) { $query .= " AND education_name LIKE '%โท%' "; }
+      else if ($request->param_education == 3) { $query .= " AND education_name LIKE '%เอก%' "; }
 
       $Faculty = DB::select($query." GROUP BY faculty_name
               ORDER BY faculty_name ASC");
@@ -338,31 +361,14 @@ class GraduateStudentReportController extends Controller
       empty($request->param_year) ?: ($query .= " AND academic_year = ".$request->param_year." ");
       empty($request->param_faculty) ?: ($query .= " AND faculty_name = '".$request->param_faculty."' ");
 
+      if ($request->param_education == 1) { $query .= " AND education_name LIKE '%ตรี%' "; }
+      else if ($request->param_education == 2) { $query .= " AND education_name LIKE '%โท%' "; }
+      else if ($request->param_education == 3) { $query .= " AND education_name LIKE '%เอก%' "; }
+
       $Department = DB::select($query." GROUP BY department_name
             ORDER BY department_name ASC");
 
       return response()->json($Department);
-  }
-
-  public function EducationList(Request $request)
-  {
-      $query = "SELECT (CASE WHEN education_name LIKE '%ตรี%' THEN 1 ELSE
-        	(CASE WHEN education_name LIKE '%โท%' THEN 2 ELSE
-        		(CASE WHEN education_name LIKE '%เอก%' THEN 3 ELSE 0 END)
-        	END)
-        END) as education_id
-        , education_name
-        FROM graduate_student_report
-        WHERE 1 = 1 ";
-
-      empty($request->param_year) ?: ($query .= " AND academic_year = ".$request->param_year." ");
-      empty($request->param_faculty) ?: ($query .= " AND faculty_name = '".$request->param_faculty."' ");
-      empty($request->param_department) ?: ($query .= " AND department_name = '".$request->param_department."' ");
-
-      $Education = DB::select($query." GROUP BY education_name
-            ORDER BY 1 ASC");
-
-      return response()->json($Education);
   }
 
   public function CheckRoleUser(Request $request)

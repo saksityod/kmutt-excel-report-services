@@ -60,5 +60,37 @@ Route::post('GraduateStudent/Export', 'GraduateStudentReportController@ExportGra
 Route::post('GraduateStudent/Import/Percent', 'GraduateStudentReportController@ImportGraduatePercentExcel');
 Route::post('GraduateStudent/Export/Percent', 'GraduateStudentReportController@ExportGraduatePercentExcel');
 
+// Bachelor Admission Report
+Route::get('BachelorAdmission/YearList', 'BachelorAdmissionReportController@YearList');
+Route::get('BachelorAdmission/FacultyList', 'BachelorAdmissionReportController@FacultyList');
+Route::get('BachelorAdmission/DepartmentList', 'BachelorAdmissionReportController@DepartmentList');
+Route::get('BachelorAdmission/CheckRoleUser', 'BachelorAdmissionReportController@CheckRoleUser');
+Route::post('BachelorAdmission/Import', 'BachelorAdmissionReportController@ImportBachelorAdmissionExcel');
+Route::post('BachelorAdmission/Export', 'BachelorAdmissionReportController@ExportBachelorAdmissionExcel');
+
+// Master PhD Admission Report
+Route::get('MasterPhDAdmission/YearList', 'MasterPhDAdmissionReportController@YearList');
+Route::get('MasterPhDAdmission/SemesterList', 'MasterPhDAdmissionReportController@SemesterList');
+Route::get('MasterPhDAdmission/FacultyList', 'MasterPhDAdmissionReportController@FacultyList');
+Route::get('MasterPhDAdmission/DepartmentList', 'MasterPhDAdmissionReportController@DepartmentList');
+Route::get('MasterPhDAdmission/CheckRoleUser', 'MasterPhDAdmissionReportController@CheckRoleUser');
+Route::post('MasterPhDAdmission/Import', 'MasterPhDAdmissionReportController@ImportMasterPhDAdmissionExcel');
+Route::post('MasterPhDAdmission/Export', 'MasterPhDAdmissionReportController@ExportMasterPhDAdmissionExcel');
+
+// FTES Report
+Route::get('FTES/YearList', 'FTESReportController@YearList');
+Route::get('FTES/SemesterList', 'FTESReportController@SemesterList');
+Route::get('FTES/FacultyList', 'FTESReportController@FacultyList');
+Route::get('FTES/CheckRoleUser', 'FTESReportController@CheckRoleUser');
+Route::post('FTES/Import', 'FTESReportController@ImportFTESExcel');
+Route::post('FTES/Export', 'FTESReportController@ExportFTESExcel');
+
+// Admission Score Report
+Route::get('AdmissionScore/YearList', 'AdmissionScoreReportController@YearList');
+Route::get('AdmissionScore/FacultyFieldList', 'AdmissionScoreReportController@FacultyFieldList');
+Route::get('AdmissionScore/CheckRoleUser', 'AdmissionScoreReportController@CheckRoleUser');
+Route::post('AdmissionScore/Import', 'AdmissionScoreReportController@ImportAdmissionScoreExcel');
+Route::post('AdmissionScore/Export', 'AdmissionScoreReportController@ExportAdmissionScoreExcel');
+
 // Jasper Report
 Route::Resource('generate', 'JasperController@generate');
